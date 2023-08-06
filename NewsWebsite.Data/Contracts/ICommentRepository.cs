@@ -1,12 +1,15 @@
-﻿using NewsWebsite.ViewModels.Comments;
+﻿using NewsWebsite.Entities;
+using NewsWebsite.ViewModels.Comments;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace NewsWebsite.Data.Contracts
 {
     public interface ICommentRepository
     {
-        List<CommentViewModel> GetPaginateComments(int offset, int limit, Func<CommentViewModel, Object> orderByAscFunc, Func<CommentViewModel, Object> orderByDescFunc, string searchText);
+        Task AddComment(Comment comment);
+        Task<List<CommentViewModel>> GetPaginateComments(int offset, int limit, Func<CommentViewModel, object> orderByAscFunc, Func<CommentViewModel, object> orderByDescFunc, string searchText);
     }
 }

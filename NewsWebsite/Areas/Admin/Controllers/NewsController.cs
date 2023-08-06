@@ -137,7 +137,7 @@ namespace NewsWebsite.Areas.Admin.Controllers
                     if (news.FirstOrDefault().PublishDateTime > DateTime.Now)
                     {
                         newsViewModel.FuturePublish = true;
-                        newsViewModel.PersianPublishDate = news.FirstOrDefault().PublishDateTime.ConvertMiladiToShamsi("yyyy/MM/dd");
+                        newsViewModel.PersianPublishDate = DateTimeExtensions.ConvertMiladiToShamsi(news.FirstOrDefault().PublishDateTime,"yyyy/MM/dd");
                         newsViewModel.PersianPublishTime = news.FirstOrDefault().PublishDateTime.Value.TimeOfDay.ToString();
                     }
                     newsViewModel.NewsCategoriesViewModel = new NewsCategoriesViewModel(await _uw.CategoryRepository.GetAllCategoriesAsync(),news.FirstOrDefault().NewsCategories.Select(n=>n.CategoryId).ToArray());
@@ -186,7 +186,7 @@ namespace NewsWebsite.Areas.Admin.Controllers
                             if (viewModel.PersianPublishDate.HasValue())
                             {
                                 var persianTimeArray = viewModel.PersianPublishTime.Split(':');
-                                viewModel.PublishDateTime = viewModel.PersianPublishDate.ConvertShamsiToMiladi().Date + new TimeSpan(int.Parse(persianTimeArray[0]), int.Parse(persianTimeArray[1]), 0);
+                                viewModel.PublishDateTime = DateTimeExtensions.ConvertShamsiToMiladi(viewModel.PersianPublishDate).Date + new TimeSpan(int.Parse(persianTimeArray[0]), int.Parse(persianTimeArray[1]), 0);
                             }
                             else
                                 viewModel.PublishDateTime = news.PublishDateTime;
@@ -232,7 +232,7 @@ namespace NewsWebsite.Areas.Admin.Controllers
                         else
                         {
                             var persianTimeArray = viewModel.PersianPublishTime.Split(':');
-                            viewModel.PublishDateTime = viewModel.PersianPublishDate.ConvertShamsiToMiladi().Date + new TimeSpan(int.Parse(persianTimeArray[0]), int.Parse(persianTimeArray[1]), 0);
+                            viewModel.PublishDateTime = DateTimeExtensions.ConvertShamsiToMiladi(viewModel.PersianPublishDate).Date + new TimeSpan(int.Parse(persianTimeArray[0]), int.Parse(persianTimeArray[1]), 0);
                         }
                     }
 

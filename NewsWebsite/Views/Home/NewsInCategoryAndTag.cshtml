@@ -52,7 +52,7 @@
                                         <img src="~/newsImage/@item.ImageName" alt="@item.ImageName">
 
                                         <!-- Video Duration -->
-                                        <span class="video-duration">@item.PublishDateTime.ConvertMiladiToShamsi("HH:mm")</span>
+                                        <span class="video-duration">@DateTimeExtensions.ConvertMiladiToShamsi(item.PublishDateTime,"HH:mm")</span>
                                     </div>
                                 </div>
                                 <div class="col-12 col-md-6">
@@ -63,7 +63,7 @@
                                         <div class="post-meta d-flex align-items-center mb-2">
                                             <a href="#" class="post-author">@item.AuthorName</a>
                                             <i class="fa fa-circle" aria-hidden="true"></i>
-                                            <a href="#" class="post-date">@item.PublishDateTime.ConvertMiladiToShamsi("dd MMMM yyyy")</a>
+                                            <a href="#" class="post-date">@DateTimeExtensions.ConvertMiladiToShamsi(item.PublishDateTime,"dd MMMM yyyy")</a>
                                         </div>
                                         <p class="mb-2">@item.Abstract</p>
                                         <div class="post-meta d-flex">

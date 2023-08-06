@@ -23,7 +23,7 @@ namespace NewsWebsite.Data.Repositories
         public List<VideoViewModel> GetPaginateVideos(int offset, int limit, Func<VideoViewModel, Object> orderByAscFunc, Func<VideoViewModel, Object> orderByDescFunc, string searchText)
         {
             List<VideoViewModel> videos= _context.Videos.Where(c => c.Title.Contains(searchText))
-                                    .Select(c => new VideoViewModel { VideoId = c.VideoId, Title = c.Title, Url = c.Url, Poster=c.Poster,PersianPublishDateTime=c.PublishDateTime.ConvertMiladiToShamsi("yyyy/MM/dd ساعت HH:mm:ss"),PublishDateTime=c.PublishDateTime})
+                                    .Select(c => new VideoViewModel { VideoId = c.VideoId, Title = c.Title, Url = c.Url, Poster=c.Poster,PersianPublishDateTime=DateTimeExtensions.ConvertMiladiToShamsi(c.PublishDateTime, "yyyy/MM/dd ساعت HH:mm:ss"),PublishDateTime=c.PublishDateTime})
                                     .OrderBy(orderByAscFunc).OrderByDescending(orderByDescFunc).Skip(offset).Take(limit).ToList();
 
           

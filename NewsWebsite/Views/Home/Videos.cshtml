@@ -51,7 +51,7 @@
                                     </div>
 
                                     <div class="mt-0 p-1">
-                                        <span style="font-size: 12px;" class="video-duration">@item.PublishDateTime.ConvertMiladiToShamsi("dd MMMM yyyy ساعت HH:mm")</span>
+                                        <span style="font-size: 12px;" class="video-duration">@DateTimeExtensions.ConvertMiladiToShamsi(item.PublishDateTime,"dd MMMM yyyy ساعت HH:mm")</span>
                                         <br />
                                         <a href="/Video/@item.VideoId" class="post-title">@item.Title</a>
                                     </div>

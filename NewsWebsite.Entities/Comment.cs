@@ -14,7 +14,7 @@ namespace NewsWebsite.Entities
         }
 
         [Key]
-        public string CommentId { get; set; }
+        public string CommentId { get; set; } = Guid.NewGuid().ToString();
         public string Name { get; set; }
         public string Email { get; set; }
         public string Desription { get; set; }

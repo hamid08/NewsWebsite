@@ -124,7 +124,9 @@ namespace NewsWebsite.Controllers
         [Route("Videos")]
         public async Task<IActionResult> Videos()
         {
-            return View(await _uw.BaseRepository<Video>().FindAllAsync());
+            var vidoes= await _uw.BaseRepository<Video>().FindAllAsync();
+
+            return View(vidoes);
         }
 
         [Route("Video/{videoId}")]

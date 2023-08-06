@@ -14,7 +14,7 @@
                 <img src="~/newsImage/@Model.First().ImageName" alt="Model.First().ImageName">
 
                 <!-- Video Duration -->
-                <span class="video-duration">@Model.First().PublishDateTime.ConvertMiladiToShamsi("HH:mm")</span>
+                <span class="video-duration">@DateTimeExtensions.ConvertMiladiToShamsi(Model.First().PublishDateTime,"HH:mm")</span>
             </div>
 
             <!-- Post Content -->

@@ -31,7 +31,7 @@
                                             <a href="#"><i class="fa fa-thumbs-o-down" aria-hidden="true"></i> @item.NumberOfDisLike</a>
                                         </div>
                                     </div>
-                                    <span class="news-duration">@item.PublishDateTime.ConvertMiladiToShamsi("dd MMMM yyyy")</span>
+                                    <span class="news-duration">@DateTimeExtensions.ConvertMiladiToShamsi(item.PublishDateTime,"dd MMMM yyyy")</span>
                                 </div>
                             </div>
                             i++;
@@ -107,7 +107,7 @@
                                         <a href="/Videos/@item.VideoId" class="post-title">@item.Title</a>
                                     </div>
 
-                                    <span class="video-duration direction-rtl">@item.PublishDateTime.ConvertMiladiToShamsi("dd MMMM yyyy")</span>
+                                    <span class="video-duration direction-rtl">@DateTimeExtensions.ConvertMiladiToShamsi(item.PublishDateTime,"dd MMMM yyyy")</span>
                                 </div>
                             }
                         </div>
@@ -131,7 +131,7 @@
                                         <div class="single-post-area">
                                             <div class="post-thumbnail">
                                                 <img src="~/newsImage/@item.ImageName" alt="@item.ImageName">
-                                                <span class="video-duration direction-rtl">@item.PublishDateTime.ConvertMiladiToShamsi("dd MMMM yyyy")</span>
+                                                <span class="video-duration direction-rtl">@DateTimeExtensions.ConvertMiladiToShamsi(item.PublishDateTime,"dd MMMM yyyy")</span>
                                             </div>
                                             <div class="post-content">
                                                 <a href="#" class="post-cata cata-sm cata-primary">@item.NameOfCategories</a>
@@ -167,7 +167,7 @@
                                         <div class="single-post-area">
                                             <div class="post-thumbnail">
                                                 <img src="~/newsImage/@item.ImageName" alt="@item.ImageName">
-                                                <span class="video-duration direction-rtl">@item.PublishDateTime.ConvertMiladiToShamsi("dd MMMM yyyy")</span>
+                                                <span class="video-duration direction-rtl">@DateTimeExtensions.ConvertMiladiToShamsi(item.PublishDateTime,"dd MMMM yyyy")</span>
                                             </div>
                                             <div class="post-content">
                                                 <a href="#" class="post-cata cata-sm cata-primary">@item.NameOfCategories</a>
@@ -257,7 +257,60 @@ $(function() {
                 $("#NewsPaginate").html(result);
              });
     	});
+
+        var hamid = 0;
+        setInterval(function ()
+        {
+            hamid = hamid+1;
+            if(hamid ==0){
+
+            $('#post-0-tab').trigger("click");
+            }
+            else if(hamid == 1){
+                $('#post-1-tab').trigger("click");
+
+            }
+            else if (hamid == 2) {
+                $('#post-2-tab').trigger("click");
+
+            }
+            else if (hamid == 3) {
+                $('#post-3-tab').trigger("click");
+
+            }
+            else if (hamid == 4) {
+                $('#post-4-tab').trigger("click");
+
+            }else if (hamid == 5) {
+                $('#post-5-tab').trigger("click");
+
+            }else if (hamid == 6) {
+                $('#post-6-tab').trigger("click");
+
+            }else if (hamid == 7) {
+                $('#post-7-tab').trigger("click");
+
+            }else if (hamid == 8) {
+                $('#post-8-tab').trigger("click");
+
+            }else if (hamid == 9) {
+                $('#post-9-tab').trigger("click");
+
+            }else if (hamid == 10) {
+                $('#post-10-tab').trigger("click");
+
+            }
+
+            if(hamid == 10){
+                hamid = 0;
+            }
+
+        }, 5000);
+
+        $('#most-viewed-day-tab').trigger("click");
+        $('#most-talk-day-tab').trigger("click");
 });
+
 
 </script>
 

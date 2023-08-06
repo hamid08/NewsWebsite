@@ -30,7 +30,7 @@
                 <div class="single-video-area">
                     <div class="post-thumbnail">
                         <video width="100%" poster="@("/posters/"+Model.Poster)" controls><source src="@Model.Url">Your browser does not support the video tag.</video>
-                        <span class="video-duration">@Model.PublishDateTime.ConvertMiladiToShamsi("dd MMMM yyyy ساعت HH:mm")</span>
+                        <span class="video-duration">@DateTimeExtensions.ConvertMiladiToShamsi(Model.PublishDateTime,"dd MMMM yyyy ساعت HH:mm")</span>
                     </div>
                     <div class="post-content">
                         <p style="font-size:19px;">@Model.Title</p>

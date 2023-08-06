@@ -31,7 +31,7 @@
                                 <img src="~/newsImage/@item.ImageName" alt="@item.ImageName">
 
                                 <!-- Video Duration -->
-                                <span class="video-duration">@item.PublishDateTime.ConvertMiladiToShamsi("dd MMMM yyyy")</span>
+                                <span class="video-duration">@DateTimeExtensions.ConvertMiladiToShamsi(item.PublishDateTime,"dd MMMM yyyy")</span>
                             </div>
 
                             <!-- Post Content -->

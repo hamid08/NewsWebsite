@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using NewsWebsite.Common;
 using NewsWebsite.Data.Contracts;
 using NewsWebsite.Entities;
+using NewsWebsite.Entities.identity;
 using NewsWebsite.ViewModels.Comments;
 
 namespace NewsWebsite.Areas.Admin.Controllers
@@ -14,14 +15,15 @@ namespace NewsWebsite.Areas.Admin.Controllers
     public class CommentsController : BaseController
     {
         private readonly IUnitOfWork _uw;
+        //private readonly ICommentRepository _commentRepository;
         private readonly IMapper _mapper;
         private const string CommentNotFound = "دیدگاه یافت نشد.";
 
-        public CommentsController(IUnitOfWork uw, IMapper mapper)
+        public CommentsController(/*ICommentRepository commentRepository,*/IUnitOfWork uw, IMapper mapper)
         {
             _uw = uw;
             _uw.CheckArgumentIsNull(nameof(_uw));
-
+            //_commentRepository = commentRepository;
             _mapper = mapper;
             _mapper.CheckArgumentIsNull(nameof(_mapper));
         }
@@ -33,7 +35,7 @@ namespace NewsWebsite.Areas.Admin.Controllers
 
 
         [HttpGet]
-        public IActionResult GetComments(string search, string order, int offset, int limit, string sort)
+        public async Task<IActionResult> GetComments(string search, string order, int offset, int limit, string sort)
         {
             List <CommentViewModel> comments;
             int total = _uw.BaseRepository<Comment>().CountEntities();
@@ -46,30 +48,30 @@ namespace NewsWebsite.Areas.Admin.Controllers
             if (sort == "نام")
             {
                 if (order == "asc")
-                    comments = _uw.CommentRepository.GetPaginateComments(offset, limit,item=>item.Name , item=>"", search);
+                    comments = await _uw.CommentRepository.GetPaginateComments(offset, limit,item=>item.Name , item=>"", search);
                 else
-                    comments = _uw.CommentRepository.GetPaginateComments(offset, limit, item => "", item => item.Name, search);
+                    comments = await _uw.CommentRepository.GetPaginateComments(offset, limit, item => "", item => item.Name, search);
             }
 
 
             else if (sort == "ایمیل")
             {
                 if (order == "asc")
-                    comments = _uw.CommentRepository.GetPaginateComments(offset, limit, item => item.Email, item=>"", search);
+                    comments = await _uw.CommentRepository.GetPaginateComments(offset, limit, item => item.Email, item=>"", search);
                 else
-                    comments = _uw.CommentRepository.GetPaginateComments(offset, limit,item=>"", item => item.Email, search);
+                    comments = await _uw.CommentRepository.GetPaginateComments(offset, limit,item=>"", item => item.Email, search);
             }
 
             else if (sort == "تاریخ ارسال")
             {
                 if (order == "asc")
-                    comments = _uw.CommentRepository.GetPaginateComments(offset, limit, item => item.PersianPostageDateTime, item => "", search);
+                    comments = await _uw.CommentRepository.GetPaginateComments(offset, limit, item => item.PersianPostageDateTime, item => "", search);
                 else
-                    comments = _uw.CommentRepository.GetPaginateComments(offset, limit, item => "", item => item.PersianPostageDateTime, search);
+                    comments = await _uw.CommentRepository.GetPaginateComments(offset, limit, item => "", item => item.PersianPostageDateTime, search);
             }
 
             else
-                comments = _uw.CommentRepository.GetPaginateComments(offset, limit,item=>"",item=>item.PersianPostageDateTime, search);
+                comments = await _uw.CommentRepository.GetPaginateComments(offset, limit,item=>"",item=>item.PersianPostageDateTime, search);
 
             if (search != "")
                 total = comments.Count();
@@ -190,26 +192,25 @@ namespace NewsWebsite.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> SendComment(CommentViewModel viewModel)
         {
-            if (ModelState.IsValid)
+            try
             {
-                viewModel.PostageDateTime = DateTime.Now;
-                var comment = new Comment
+
+                if (ModelState.IsValid)
                 {
-                    Desription = viewModel.Desription,
-                    Email = viewModel.Email,
-                    Name = viewModel.Name,
-                    PostageDateTime = viewModel.PostageDateTime,
-                    NewsId = viewModel.NewsId,
-                    IsConfirm = true,
-                    ParentCommentId = ""
-                    
-                };
-                await _uw._Context.Comments.AddAsync(comment);
-                //await _uw.BaseRepository<Comment>().CreateAsync(comment);
-                await _uw.Commit();
-                TempData["notification"] = "دیدگاه شما با موفقیت ارسال شد و بعد از تایید در سایت نمایش داده می شود.";
+                    viewModel.PostageDateTime = DateTime.Now;
+                 viewModel.CommentId = Guid.NewGuid().ToString();
+                    viewModel.IsConfirm = true;
+                    await _uw.BaseRepository<Comment>().CreateAsync(_mapper.Map<Comment>(viewModel));
+                    await _uw.Commit();
+                    TempData["notification"] = "دیدگاه شما با موفقیت ارسال شد و بعد از تایید در سایت نمایش داده می شود.";
+                }
+                return PartialView("_SendComment", viewModel);
             }
-            return PartialView("_SendComment", viewModel);
+            catch (Exception ex)
+            {
+
+                throw;
+            }
         }
     }
 }

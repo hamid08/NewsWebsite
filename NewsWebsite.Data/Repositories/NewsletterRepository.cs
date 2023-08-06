@@ -26,7 +26,8 @@ namespace NewsWebsite.Data.Repositories
                 .Where(c => c.Email.Contains(searchText) 
                 
                 )
-                                   .Select(l => new NewsletterViewModel { Email = l.Email,IsActive=l.IsActive, PersianRegisterDateTime = l.RegisterDateTime.ConvertMiladiToShamsi("yyyy/MM/dd ساعت hh:mm:ss") })
+                                   .Select(l => new NewsletterViewModel { Email = l.Email,IsActive=l.IsActive, 
+                                       PersianRegisterDateTime = DateTimeExtensions.ConvertMiladiToShamsi(l.RegisterDateTime, "yyyy/MM/dd ساعت hh:mm:ss") })
                                    .OrderBy(orderByAscFunc).OrderByDescending(orderByDescFunc)
                                    .Skip(offset).Take(limit).ToList();
 

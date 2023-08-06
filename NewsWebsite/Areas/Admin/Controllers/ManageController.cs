@@ -137,7 +137,7 @@ namespace NewsWebsite.Areas.Admin.Controllers
                 else
                 {
                     profileViewModel = _mapper.Map<ProfileViewModel>(user);
-                    profileViewModel.PersianBirthDate = profileViewModel.BirthDate.ConvertMiladiToShamsi("yyyy/MM/dd");
+                    profileViewModel.PersianBirthDate = DateTimeExtensions.ConvertMiladiToShamsi(profileViewModel.BirthDate, "yyyy/MM/dd");
                 }
             }
 
@@ -165,7 +165,7 @@ namespace NewsWebsite.Areas.Admin.Controllers
                     else
                         viewModel.Image = user.Image;
 
-                    viewModel.BirthDate = viewModel.PersianBirthDate.ConvertShamsiToMiladi();
+                    viewModel.BirthDate = DateTimeExtensions.ConvertShamsiToMiladi(viewModel.PersianBirthDate);
                     var result = await _userManager.UpdateAsync(_mapper.Map(viewModel, user));
                     if (result.Succeeded)
                         ViewBag.Alert = EditSuccess;

@@ -9,7 +9,7 @@
                     <img src="~/assets/img/UserPic.png" alt="author">
                 </div>
                 <div class="comment-meta">
-                    <a href="#" class="comment-date">@sub.PostageDateTime.ConvertMiladiToShamsi("dd MMMM yyyy ساعت HH:mm")</a>
+                    <a href="#" class="comment-date">@DateTimeExtensions.ConvertMiladiToShamsi(sub.PostageDateTime,"dd MMMM yyyy ساعت HH:mm")</a>
                     <h6>@sub.Name</h6>
                     <p>@sub.Desription</p>
                     <div class="d-flex align-items-center">
