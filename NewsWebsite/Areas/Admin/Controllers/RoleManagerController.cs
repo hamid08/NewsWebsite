@@ -1,18 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using NewsWebsite.Common;
 using NewsWebsite.Common.Attributes;
 using NewsWebsite.Entities.identity;
 using NewsWebsite.Services.Contracts;
+using NewsWebsite.ViewModels.DynamicAccess;
 using NewsWebsite.ViewModels.RoleManager;
 
 namespace NewsWebsite.Areas.Admin.Controllers
 {
+    [DisplayName("مدیریت نقش ها")]
+
     public class RoleManagerController : BaseController
     {
         private readonly IApplicationRoleManager _roleManager;
@@ -28,6 +35,8 @@ namespace NewsWebsite.Areas.Admin.Controllers
         }
 
         [HttpGet]
+        [HttpGet, DisplayName("مشاهده")]
+        [Authorize(Policy = ConstantPolicies.DynamicPermission)]
         public IActionResult Index()
         {
             return View();

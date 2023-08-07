@@ -69,7 +69,7 @@
                                     <label class="custom-toggle">
                                         @if (Model.Roles != null)
                                         {
-                                            if (Model.Roles.Select(r => r.RoleId).Contains(item.Id))
+                                            if (Model.Roles.Any(u=>u.RoleId == item.Id))
                                             {
                                                 <input type="radio" value="@item.Id" asp-for="RoleId" checked />
                                             }

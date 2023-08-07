@@ -362,7 +362,7 @@ namespace NewsWebsite.Data.Repositories
                 .Include(c => c.User)
                 .Include(c => c.Comments)
                 .Include(c => c.NewsCategories).ThenInclude(c => c.Category)
-                .Include(c => c.NewsTags)
+                .Include(c => c.NewsTags).ThenInclude(c=> c.Tag)
                 .Where(c=> c.NewsId == newsId)
                 .Select(n => new NewsViewModel
                 {
@@ -385,7 +385,10 @@ namespace NewsWebsite.Data.Repositories
                     PublishDateTime = n.PublishDateTime == null ? new DateTime(01, 01, 01) : n.PublishDateTime,
                     PersianPublishDate = n.PublishDateTime == null ? "-" : DateTimeExtensions.ConvertMiladiToShamsi(n.PublishDateTime,"yyyy/MM/dd ساعت HH:mm:ss"),
                     Status = n.IsPublish == false ? "پیش نویس" : n.PublishDateTime > DateTime.Now ? "انتشار در آینده" : "منتشر شده",
-                    AuthorInfo = n.User
+                    AuthorInfo = n.User,
+                    TagIdsList = n.NewsTags.Select(c=> c.TagId).ToList(),
+                    TagNamesList = n.NewsTags.Select(c=> c.Tag.TagName).ToList()
+                    
                 })
                 .FirstOrDefaultAsync();
 
@@ -453,12 +456,13 @@ namespace NewsWebsite.Data.Repositories
         {
             var newsList = new List<NewsViewModel>();
             int randomRow;
+
             int newsCount = await _context.News
                 .Include(t => t.NewsTags)
-                .Where(n => n.IsPublish == true 
-                && n.PublishDateTime <= DateTime.Now 
-                && tagIdList.Any(y => n.NewsTags.Select(x => x.TagId).Contains(y)) 
-                && n.NewsId != newsId).CountAsync();
+                .Where(n => n.IsPublish == true )
+                .Where(n=> n.PublishDateTime <= DateTime.Now )
+                //.Where(n=> tagIdList.Any(y => n.NewsTags.Select(x => x.TagId).Contains(y)) 
+                .Where(n=> n.NewsId != newsId).CountAsync();
 
             for (int i = 0; i < number && i< newsCount; i++)
             {
@@ -470,7 +474,7 @@ namespace NewsWebsite.Data.Repositories
                     .Include(l => l.Visits)
                     .Where(n => n.IsPublish == true 
                     && n.PublishDateTime <= DateTime.Now 
-                    && tagIdList.Any(y => n.NewsTags.Select(x => x.TagId).Contains(y)) 
+                    //&& tagIdList.Any(y => n.NewsTags.Select(x => x.TagId).Contains(y)) 
                     && n.NewsId != newsId)
 
                     .Select(n => new NewsViewModel { Title = n.Title, Url = n.Url, NewsId = n.NewsId, ImageName = n.ImageName, PublishDateTime=n.PublishDateTime,

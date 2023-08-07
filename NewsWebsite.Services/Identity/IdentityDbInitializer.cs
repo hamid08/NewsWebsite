@@ -11,6 +11,9 @@ using NewsWebsite.Entities.identity;
 using NewsWebsite.Common;
 using NewsWebsite.Data;
 using NewsWebsite.ViewModels.Settings;
+using NewsWebsite.ViewModels.DynamicAccess;
+using System.Collections.Generic;
+using System.Security.Claims;
 
 namespace NewsWebsite.Services.Identity
 {
@@ -138,6 +141,13 @@ namespace NewsWebsite.Services.Identity
             if (addToRoleResult == IdentityResult.Failed())
             {
                 _logger.LogError($"{thisMethodName}: adminUser AddToRoleAsync failed. {addToRoleResult.DumpErrors()}");
+                return IdentityResult.Failed();
+            }
+
+            var addToClaimsResult = await _applicationUserManager.AddClaimsAsync(adminUser, new List<Claim> { new Claim(ConstantPolicies.DynamicPermissionClaimType, "Admin:DynamicAccess:Index"), new Claim(ConstantPolicies.DynamicPermissionClaimType, "Admin:UserManager:Index") });
+            if (addToClaimsResult == IdentityResult.Failed())
+            {
+                _logger.LogError($"{thisMethodName}: adminUser AddToClaimsAsync failed. {addToClaimsResult.DumpErrors()}");
                 return IdentityResult.Failed();
             }
 

@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -11,10 +15,12 @@ using Microsoft.Extensions.Logging;
 using NewsWebsite.Common;
 using NewsWebsite.Entities.identity;
 using NewsWebsite.Services.Contracts;
+using NewsWebsite.ViewModels.DynamicAccess;
 using NewsWebsite.ViewModels.Manage;
 
 namespace NewsWebsite.Areas.Admin.Controllers
 {
+
     public class ManageController : BaseController
     {
         private readonly IApplicationRoleManager _roleManager;
@@ -175,6 +181,11 @@ namespace NewsWebsite.Areas.Admin.Controllers
 
                 return View(viewModel);
             }
+        }
+
+        public IActionResult AccessDenied()
+        {
+            return View();
         }
     }
 }

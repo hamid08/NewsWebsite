@@ -1,17 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Xml.Linq;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using NewsWebsite.Common;
 using NewsWebsite.Data.Contracts;
 using NewsWebsite.Services.Contracts;
+using NewsWebsite.ViewModels.DynamicAccess;
 using NewsWebsite.ViewModels.Settings;
 using NewsWebsite.ViewModels.SiteSetting;
 
 namespace NewsWebsite.Areas.Admin.Controllers
 {
+    [DisplayName("تنظیمات سایت")]
+
     public class SiteSettingController : BaseController
     {
         private readonly IUnitOfWork _uw;
@@ -25,6 +32,8 @@ namespace NewsWebsite.Areas.Admin.Controllers
         }
 
         [HttpGet]
+        [HttpGet, DisplayName("مشاهده")]
+        [Authorize(Policy = ConstantPolicies.DynamicPermission)]
         public IActionResult Index()
         {
             var settings = new SettingsViewModel()

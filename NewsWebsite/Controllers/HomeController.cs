@@ -37,12 +37,12 @@ namespace NewsWebsite.Controllers
             {
                 int countNewsPublished = _uw.NewsRepository.CountNewsPublished();
                 var news = await _uw.NewsRepository.GetPaginateNews(0, 10, item => "", item => item.First().PersianPublishDate, "", true , null);
-                var mostViewedNews = new List<NewsViewModel>() /*await _uw.NewsRepository.MostViewedNews(0, 3, "day")*/;
-                var mostTalkNews = new List<NewsViewModel>() /*await _uw.NewsRepository.MostTalkNews(0, 5, "day")*/;
-                var mostPopulerNews = new List<NewsViewModel>() /*await _uw.NewsRepository.MostPopularNews(0, 5)*/;
+                var mostViewedNews =  await _uw.NewsRepository.MostViewedNews(0, 3, "day");
+                var mostTalkNews =  await _uw.NewsRepository.MostTalkNews(0, 5, "day");
+                var mostPopulerNews = await _uw.NewsRepository.MostPopularNews(0, 5);
                 var internalNews = await _uw.NewsRepository.GetPaginateNews(0, 10, item => "", item => item.First().PersianPublishDate, "", true, true);
                 var foreignNews = await _uw.NewsRepository.GetPaginateNews(0, 10, item => "", item => item.First().PersianPublishDate, "", true, false);
-                var videos = new List<VideoViewModel>() /*_uw.VideoRepository.GetPaginateVideos(0, 10,item=>"",item=>item.PersianPublishDateTime, "")*/;
+                var videos = _uw.VideoRepository.GetPaginateVideos(0, 10,item=>"",item=>item.PersianPublishDateTime, "");
                 var homePageViewModel = new HomePageViewModel(news, mostViewedNews,mostTalkNews,mostPopulerNews,internalNews,foreignNews, videos, countNewsPublished);
                 return View(homePageViewModel);
             }
@@ -70,7 +70,7 @@ namespace NewsWebsite.Controllers
             var news = await _uw.NewsRepository.GetNewsById(newsId);
             var newsComments = await _uw.NewsRepository.GetNewsCommentsAsync(newsId);
             var nextAndPreviousNews = await _uw.NewsRepository.GetNextAndPreviousNews(news.PublishDateTime);
-            var newsRelated = new List<NewsViewModel>() /*await _uw.NewsRepository.GetRelatedNews(2, news.TagIdsList, newsId)*/;
+            var newsRelated =  await _uw.NewsRepository.GetRelatedNews(2, news.TagIdsList, newsId);
             var newsDetailsViewModel = new NewsDetailsViewModel(news, newsComments, newsRelated, nextAndPreviousNews);
             return View(newsDetailsViewModel);
         }
@@ -98,8 +98,19 @@ namespace NewsWebsite.Controllers
                 else
                 {
                     ViewBag.Category = category.CategoryName;
-                    return View("NewsInCategoryAndTag", await _uw.NewsRepository.GetNewsInCategoryAndTag(categoryId, ""));
+                    //return View("NewsInCategoryAndTag", await _uw.NewsRepository.GetNewsInCategoryAndTag(categoryId, ""));
+                    var news = await _uw.NewsRepository.GetNewsInCategoryAndTag(categoryId, "");
+
+                    var mostTalkNews = await _uw.NewsRepository.MostTalkNews(0, 5, "day");
+                    var mostPopulerNews = await _uw.NewsRepository.MostPopularNews(0, 5);
+
+                    var homePageViewModel = new HomePageViewModel(news, null, mostTalkNews, mostPopulerNews, null, null, null, 0);
+                    return View("NewsInCategoryAndTag", homePageViewModel);
+
                 }
+
+               
+
             }
         }
 
@@ -116,7 +127,15 @@ namespace NewsWebsite.Controllers
                 else
                 {
                     ViewBag.Tag = tag.TagName;
-                    return View("NewsInCategoryAndTag", await _uw.NewsRepository.GetNewsInCategoryAndTag("", tagId));
+                    //return View("NewsInCategoryAndTag", await _uw.NewsRepository.GetNewsInCategoryAndTag("", tagId));
+
+                    var news = await _uw.NewsRepository.GetNewsInCategoryAndTag("", tagId);
+
+                    var mostTalkNews = await _uw.NewsRepository.MostTalkNews(0, 5, "day");
+                    var mostPopulerNews = await _uw.NewsRepository.MostPopularNews(0, 5);
+
+                    var homePageViewModel = new HomePageViewModel(news, null, mostTalkNews, mostPopulerNews, null, null, null, 0);
+                    return View("NewsInCategoryAndTag", homePageViewModel);
                 }
             }
         }

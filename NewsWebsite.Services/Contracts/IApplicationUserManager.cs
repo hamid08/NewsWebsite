@@ -122,6 +122,8 @@ namespace NewsWebsite.Services.Contracts
         Task<string> GetFullName(ClaimsPrincipal User);
         Task<User> GetUserAsync(ClaimsPrincipal User);
         string CheckAvatarFileName(string fileName);
+        Task<User> FindClaimsInUser(int userId);
+        Task<IdentityResult> AddOrUpdateClaimsAsync(int userId, string userClaimType, IList<string> selectedUserClaimValues);
         Task<List<UsersViewModel>> GetPaginateUsersAsync(int offset, int limit, string orderBy, string searchText);
         #endregion
     }

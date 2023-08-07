@@ -1,13 +1,19 @@
-﻿
+﻿@using NewsWebsite.Services.Contracts
+@inject ISecurityTrimmingService securityTrimmingService
+
 
 
 <div id="toolbar">
-    <button type="button" class="btn btn-success" data-toggle="ajax-modal" data-url="@Url.Action("RenderUser","UserManager")">
-        <i class="fa fa-plus"></i> | افزودن کاربر جدید
-    </button>
-    <button type="button" class="btn btn-danger" data-toggle="ajax-modal" data-url="@Url.Action("DeleteGroup","UserManager")">
-        <i class="fa fa-trash"></i> | حذف گروهی
-    </button>
+    @if (securityTrimmingService.CanUserAccess(User, "Admin", "UserManager", "RenderUser") == true) {
+        <button type="button" class="btn btn-success" data-toggle="ajax-modal" data-url="@Url.Action("RenderUser", "UserManager")">
+            <i class="fa fa-plus"></i> | افزودن مشتری جدید
+        </button>
+    }
+    @if (securityTrimmingService.CanUserAccess(User, "Admin", "UserManager", "DeleteGroup") == true) {
+        <button type="button" class="btn btn-danger" data-toggle="ajax-modal" data-url="@Url.Action("DeleteGroup", "UserManager")">
+            <i class="fa fa-trash"></i> | حذف گروهی
+        </button>
+    }
 </div>
 
 <table id="table"
@@ -89,25 +95,38 @@
                     html.push('<p><b>' + key + ':</b> <img src="' + url + '" height="50" />')
                 }
 
-                   
+
             })
             return html.join('')
         }
 
 
-         function operateFormatter(value, row, index) {
-        return [
-            '<a class="btn btn btn-primary btn-sm" href=@Url.Action("Details","UsersManager")/' + row.Id + ' title="Management">',
-            '<i class="fa fa-user"></i> | مدیریت ', '</a>',
+    function operateFormatter(value, row, index) {
+        var access = "";
 
-            '<button type="button" class="btn-link text-success" data-toggle="ajax-modal" data-url=@Url.Action("RenderUser", "UserManager")?userId=' + row.Id + ' title="ویرایش">',
-            '<i class="fa fa-edit"></i>',
-            '</button >',
 
-            '<button type="button" class="btn-link text-danger" data-toggle="ajax-modal" data-url=@Url.Action("Delete", "UserManager")/?userId=' + row.Id + ' title="حذف">',
-            '<i class="fa fa-trash"></i>',
-            '</button >'
-        ].join('')
+       
+        if ('@securityTrimmingService.CanUserAccess(User,"Admin", "UserManager", "Details")' == 'True') {
+            access = access +
+                '<a class="btn btn btn-primary btn-sm" href=@Url.Action("Details","UserManager")?userId=' +
+                row.Id +
+                ' title="مدیریت">' +
+                '<i class="fa fa-user"></i> | مدیریت  </a>';
+        }
+            access = access +
+                '<a class="btn btn btn-success mr-1 btn-sm" href=@Url.Action("Index","DynamicAccess")?userId=' +
+                row.Id +
+                ' title="سطح دسترسی">' +
+            ' سطح دسترسی  </a>';
+        if ('@securityTrimmingService.CanUserAccess(User,"Admin", "UserManager", "RenderUser")' == 'True') {
+            access = access + '<button type="button" class="btn-link text-success" data-toggle="ajax-modal" data-url=@Url.Action("RenderUser", "UserManager")?userId=' + row.Id + ' title="ویرایش"> ' +
+                '<i class="fa fa-edit"></i></button >';
+        }
+        if ('@securityTrimmingService.CanUserAccess(User,"Admin", "UserManager", "Delete")' == 'True') {
+            access = access + '<button type="button" class="btn-link text-danger" data-toggle="ajax-modal" data-url=@Url.Action("Delete", "UserManager")/?userId=' + row.Id + ' title="حذف"><i class="fa fa-trash"></i></button>';
+        }
+        
+        return access;
     }
 
      function checkBoxFormat(value, row) {
@@ -167,11 +186,6 @@
                     },{
                         field: 'نام کاربری',
                         title: 'نام کاربری',
-                        sortable: true,
-                        align: 'center'
-                    },{
-                        field: 'تاریخ عضویت',
-                        title: 'تاریخ عضویت',
                         sortable: true,
                         align: 'center'
                     },{

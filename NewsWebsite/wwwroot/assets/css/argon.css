@@ -21,6 +21,15 @@
     font-family: Vazir_Medium !important;
 }
 
+.font_Vazir_FD {
+    font-family: Vazir_FD !important;
+}
+
+#select option {
+    font-family: Vazir_Medium !important;
+}
+
+
 :root {
     --blue: #5e72e4;
     --indigo: #5603ad;
@@ -2026,9 +2035,9 @@ pre {
     width: 100%;
     padding: .4rem .75rem;
     transition: all .2s cubic-bezier(.68, -.55, .265, 1.55);
-    color: #8898aa;
+    color: #212529;
     border: 1px solid #cad1d7;
-    border-radius: .375rem;
+    border-radius: .25rem;
     background-color: #fff;
     background-clip: padding-box;
     box-shadow: none;
@@ -2641,7 +2650,7 @@ fieldset:disabled a.btn {
         }
 
 .btn-success {
-    color: #fff;
+    color: #fff !important;
     border-color: #2dce89;
     background-color: #2dce89;
     box-shadow: 0 4px 6px rgba(50, 50, 93, .11), 0 1px 3px rgba(0, 0, 0, .08);
@@ -2758,7 +2767,7 @@ fieldset:disabled a.btn {
         }
 
 .btn-danger {
-    color: #fff;
+    color: #fff !important;
     border-color: #f5365c;
     background-color: #f5365c;
     box-shadow: 0 4px 6px rgba(50, 50, 93, .11), 0 1px 3px rgba(0, 0, 0, .08);
@@ -5301,7 +5310,7 @@ input[type='button'].btn-block {
     list-style: none;
     border-radius: .375rem;
     float: right;
-    direction: ltr;
+    direction: rtl;
 }
 
 .page-link {
@@ -6966,7 +6975,7 @@ button.bg-dark:focus {
 }
 
 .bg-default {
-    background-color: #172b4d !important;
+    background-color: #ee5586 !important;
 }
 
 a.bg-default:hover,
@@ -13528,6 +13537,9 @@ button.bg-lighter:focus {
 .bg-gradient-primary {
     background: linear-gradient(87deg, #5e72e4 0, #825ee4 100%) !important;
 }
+.bg-gradient-primary2 {
+    background: linear-gradient(87deg, #FF8195 0, #FF0B32 100%) !important;
+}
 
 .bg-gradient-secondary {
     background: linear-gradient(87deg, #f7fafc 0, #f7f8fc 100%) !important;
@@ -14985,10 +14997,7 @@ a.text-lighter:focus {
         box-shadow: 0 7px 14px rgba(50, 50, 93, .1), 0 3px 6px rgba(0, 0, 0, .08);
     }
 
-    .btn:not(:last-child) {
-        margin-right: .5rem;
-    }
-
+   
     .btn i:not(:first-child),
     .btn svg:not(:first-child) {
         margin-left: .5rem;
@@ -15543,10 +15552,6 @@ a.btn-icon-only {
     .card-lift--hover:hover {
         transition: none;
     }
-}
-
-.card-stats .card-body {
-    padding: 1rem 1.5rem;
 }
 
 .card-stats .card-status-bullet {

@@ -1,18 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using NewsWebsite.Common;
 using NewsWebsite.Common.Attributes;
 using NewsWebsite.Data.Contracts;
 using NewsWebsite.Entities;
+using NewsWebsite.ViewModels.DynamicAccess;
 using NewsWebsite.ViewModels.Video;
 
 namespace NewsWebsite.Areas.Admin.Controllers
 {
+    [DisplayName("مدیریت ویدیوها")]
+
     public class VideoController : BaseController
     {
         private readonly IUnitOfWork _uw;
@@ -32,6 +39,9 @@ namespace NewsWebsite.Areas.Admin.Controllers
             _env.CheckArgumentIsNull(nameof(_env));
         }
 
+
+        [HttpGet, DisplayName("مشاهده")]
+        [Authorize(Policy = ConstantPolicies.DynamicPermission)]
         public IActionResult Index()
         {
             return View();

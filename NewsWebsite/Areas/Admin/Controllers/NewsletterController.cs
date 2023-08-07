@@ -1,16 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NewsWebsite.Common;
 using NewsWebsite.Data.Contracts;
 using NewsWebsite.Entities;
+using NewsWebsite.ViewModels.DynamicAccess;
 using NewsWebsite.ViewModels.Newsletter;
 
 namespace NewsWebsite.Areas.Admin.Controllers
 {
+    [DisplayName("مدیریت خبرنامه")]
+
     public class NewsletterController : BaseController
     {
         private readonly IUnitOfWork _uw;
@@ -25,6 +32,9 @@ namespace NewsWebsite.Areas.Admin.Controllers
             _mapper = mapper;
             _mapper.CheckArgumentIsNull(nameof(_mapper));
         }
+
+        [HttpGet, DisplayName("مشاهده")]
+        [Authorize(Policy = ConstantPolicies.DynamicPermission)]
         public IActionResult Index()
         {
             return View();

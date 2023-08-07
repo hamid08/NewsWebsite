@@ -1,16 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NewsWebsite.Common;
 using NewsWebsite.Data.Contracts;
 using NewsWebsite.Entities;
+using NewsWebsite.ViewModels.DynamicAccess;
 using NewsWebsite.ViewModels.Tag;
 
 namespace NewsWebsite.Areas.Admin.Controllers
 {
+    [DisplayName("مدیریت برچسب ها")]
+
     public class TagController : BaseController
     {
         private readonly IUnitOfWork _uw;
@@ -27,6 +34,8 @@ namespace NewsWebsite.Areas.Admin.Controllers
             _mapper.CheckArgumentIsNull(nameof(_mapper));
         }
 
+        [HttpGet, DisplayName("مشاهده")]
+        [Authorize(Policy = ConstantPolicies.DynamicPermission)]
         public IActionResult Index()
         {
             return View();

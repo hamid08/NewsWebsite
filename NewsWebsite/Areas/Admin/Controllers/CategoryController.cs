@@ -1,17 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NewsWebsite.Common;
 using NewsWebsite.Common.Attributes;
 using NewsWebsite.Data.Contracts;
 using NewsWebsite.Entities;
 using NewsWebsite.ViewModels.Category;
+using NewsWebsite.ViewModels.DynamicAccess;
 
 namespace NewsWebsite.Areas.Admin.Controllers
 {
+    [DisplayName("مدیریت دسته بندی ها")]
     public class CategoryController : BaseController
     {
         private readonly IUnitOfWork _uw;
@@ -28,6 +33,8 @@ namespace NewsWebsite.Areas.Admin.Controllers
         }
 
         [HttpGet]
+        [HttpGet, DisplayName("مشاهده")]
+        [Authorize(Policy = ConstantPolicies.DynamicPermission)]
         public IActionResult Index()
         {
             return View();

@@ -1,17 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NewsWebsite.Common;
 using NewsWebsite.Data.Contracts;
 using NewsWebsite.Entities;
 using NewsWebsite.Entities.identity;
 using NewsWebsite.ViewModels.Comments;
+using NewsWebsite.ViewModels.DynamicAccess;
 
 namespace NewsWebsite.Areas.Admin.Controllers
 {
+    [DisplayName( "مدیریت نظرات")]
+
     public class CommentsController : BaseController
     {
         private readonly IUnitOfWork _uw;
@@ -28,6 +35,8 @@ namespace NewsWebsite.Areas.Admin.Controllers
             _mapper.CheckArgumentIsNull(nameof(_mapper));
         }
 
+        [HttpGet, DisplayName("مشاهده")]
+        [Authorize(Policy = ConstantPolicies.DynamicPermission)]
         public IActionResult Index()
         {
             return View();
