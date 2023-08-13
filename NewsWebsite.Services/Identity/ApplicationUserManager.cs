@@ -3,7 +3,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using NewsWebsite.Entities.identity;
 using NewsWebsite.Services.Contracts;
-using NewsWebsite.ViewModels.UserManager;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +13,7 @@ using System.IO;
 using NewsWebsite.Common;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using NewsWebsite.ViewModels.UserManager;
 
 namespace NewsWebsite.Services.Identity
 {
@@ -81,7 +81,9 @@ namespace NewsWebsite.Services.Identity
 
         public async Task<UsersViewModel> FindUserWithRolesByIdAsync(int UserId)
         {
-            return await Users.Where(u => u.Id == UserId).Select(user => new UsersViewModel
+            return await Users
+                .Include(c=> c.UserCategories)
+                .Where(u => u.Id == UserId).Select(user => new UsersViewModel
             {
                 Id = user.Id,
                 Email = user.Email,
@@ -101,6 +103,7 @@ namespace NewsWebsite.Services.Identity
                 PhoneNumberConfirmed = user.PhoneNumberConfirmed,
                 TwoFactorEnabled = user.TwoFactorEnabled,
                 Gender = user.Gender,
+                UserCategories = user.UserCategories
             }).FirstOrDefaultAsync();
         }
 

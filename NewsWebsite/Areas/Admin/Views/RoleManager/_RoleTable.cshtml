@@ -64,12 +64,13 @@
 
 
          function operateFormatter(value, row, index) {
+       
         return [
-            '<button type="button" class="btn-link text-success" data-toggle="ajax-modal" data-url=@Url.Action("RenderRole", "RoleManager")?roleId=' + row.Id + ' title="ویرایش">',
+            '<button type="button" class="btn-link text-success" data-toggle="ajax-modal" data-url=@Url.Action("RenderRole", "RoleManager")?roleId=' + row.id + ' title="ویرایش">',
             '<i class="fa fa-edit"></i>',
             '</button >',
 
-            '<button type="button" class="btn-link text-danger" data-toggle="ajax-modal" data-url=@Url.Action("Delete", "RoleManager")/?roleId=' + row.Id + ' title="حذف">',
+            '<button type="button" class="btn-link text-danger" data-toggle="ajax-modal" data-url=@Url.Action("Delete", "RoleManager")/?roleId=' + row.id + ' title="حذف">',
             '<i class="fa fa-trash"></i>',
             '</button >'
         ].join('')
@@ -103,7 +104,7 @@
                         formatter: checkBoxFormat
                     }, {
                         title: 'ردیف',
-                        field: 'ردیف',
+                    field: 'row',
                         rowspan: 2,
                         align: 'center',
                         valign: 'middle',
@@ -114,13 +115,12 @@
                         align: 'center'
                     }],
                     [{
-                        field: 'عنوان نقش',
+                    field: 'name',
                         title: 'عنوان نقش',
                         sortable: true,
-                        footerFormatter: totalNameFormatter,
                         align: 'center'
                     }, {
-                        field: 'تعداد کاربران',
+                    field: 'usersCount',
                         title: 'تعداد کاربران',
                         align: 'center'
                     }, {

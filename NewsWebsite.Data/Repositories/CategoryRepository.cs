@@ -26,9 +26,9 @@ namespace NewsWebsite.Data.Repositories
             _mapper.CheckArgumentIsNull(nameof(_mapper));
         }
 
-        public async Task<List<CategoryViewModel>> GetPaginateCategoriesAsync(int offset, int limit, bool? categoryNameSortAsc,bool? parentCategoryNameSortAsc, string searchText)
+        public async Task<List<CategoryViewModel>> GetPaginateCategoriesAsync(int offset, int limit, bool? categoryNameSortAsc, bool? parentCategoryNameSortAsc, string searchText)
         {
-            List<CategoryViewModel> categories= await _context.Categories.Include(c => c.Parent)
+            List<CategoryViewModel> categories = await _context.Categories.Include(c => c.Parent)
                                     .Where(c => c.CategoryName.Contains(searchText) || c.Parent.CategoryName.Contains(searchText))
                                     .ProjectTo<CategoryViewModel>(_mapper.ConfigurationProvider)
                                     .Skip(offset).Take(limit).AsNoTracking().ToListAsync();
@@ -50,12 +50,24 @@ namespace NewsWebsite.Data.Repositories
             return categories;
         }
 
+        public async Task<List<TreeViewCategory>> GetAllUserCategoriesAsync(List<string> userCategoryIds)
+        {
+            var Categories = await (from c in _context.Categories
+                                    where (userCategoryIds.Contains(c.CategoryId))
+                                    select new TreeViewCategory { id = c.CategoryId, title = c.CategoryName, url = c.Url }).ToListAsync();
+            foreach (var item in Categories)
+            {
+                    BindSubCategories(item);
+            }
+
+            return Categories;
+        }
 
         public async Task<List<TreeViewCategory>> GetAllCategoriesAsync()
         {
-            var Categories =await (from c in _context.Categories
-                              where (c.ParentCategoryId == null)
-                              select new TreeViewCategory { id = c.CategoryId, title = c.CategoryName ,url=c.Url}).ToListAsync();
+            var Categories = await (from c in _context.Categories
+                                    where (c.ParentCategoryId == null)
+                                    select new TreeViewCategory { id = c.CategoryId, title = c.CategoryName, url = c.Url }).ToListAsync();
             foreach (var item in Categories)
             {
                 BindSubCategories(item);
@@ -68,7 +80,7 @@ namespace NewsWebsite.Data.Repositories
         {
             var SubCategories = (from c in _context.Categories
                                  where (c.ParentCategoryId == category.id)
-                                 select new TreeViewCategory { id = c.CategoryId, title = c.CategoryName , url=c.Url }).ToList();
+                                 select new TreeViewCategory { id = c.CategoryId, title = c.CategoryName, url = c.Url }).ToList();
             foreach (var item in SubCategories)
             {
                 BindSubCategories(item);
@@ -78,7 +90,7 @@ namespace NewsWebsite.Data.Repositories
 
         public Category FindByCategoryName(string categoryName)
         {
-           return  _context.Categories.Where(c => c.CategoryName == categoryName.TrimStart().TrimEnd()).FirstOrDefault();
+            return _context.Categories.Where(c => c.CategoryName == categoryName.TrimStart().TrimEnd()).FirstOrDefault();
         }
 
 

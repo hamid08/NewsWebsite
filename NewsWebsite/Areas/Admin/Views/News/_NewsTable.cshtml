@@ -78,18 +78,19 @@
 
     function isPublishFormatter(value, row, index) {
     return [
-        '<span class="badge badge-primary">' + row.Status + '</span>'
+            '<span class="badge badge-primary">' + row.status + '</span>'
       ].join('')
     }
 
 
      function operateFormatter(value, row, index) {
+        
         return [
-            '<a class="text-success" href="/Admin/News/CreateOrUpdate?newsId='+row.Id+'" title="ویرایش">',
+            '<a class="text-success" href="/Admin/News/CreateOrUpdate?newsId=' + row.newsId + '" title="ویرایش">',
             '<i class="fa fa-edit"></i>',
             '</a >',
 
-            '<button type="button" class="btn-link text-danger" data-toggle="ajax-modal" data-url=@Url.Action("Delete", "News")/?newsId=' + row.Id + ' title="حذف">',
+            '<button type="button" class="btn-link text-danger" data-toggle="ajax-modal" data-url=@Url.Action("Delete", "News")/?newsId=' + row.newsId + ' title="حذف">',
             '<i class="fa fa-trash"></i>',
             '</button >'
         ].join('')
@@ -98,7 +99,7 @@
       function likeFormatter(value, row, index) {
         return [
             '<a class="btn btn-success btn-sm text-white text-success">',
-            row.NumberOfLike,'<i class="fa fa-thumbs-up mr-1"></i>',
+            row.numberOfLike, '<i class="fa fa-thumbs-up mr-1"></i>',
             '</a >'
         ].join('')
     }
@@ -106,7 +107,7 @@
      function dislikeFormatter(value, row, index) {
         return [
             '<a class="btn btn-danger btn-sm text-white">',
-            row.NumberOfDisLike,'<i class="fa fa-thumbs-down mr-1"></i>',
+            row.numberOfDisLike,'<i class="fa fa-thumbs-down mr-1"></i>',
             '</a >'
         ].join('')
     }
@@ -114,7 +115,7 @@
     function commentFormatter(value, row, index) {
         return [
             '<a class="btn btn-primary btn-sm text-white">',
-            row.NumberOfComments,'<i class="fa fa-comments mr-1"></i>',
+            row.numberOfComments,'<i class="fa fa-comments mr-1"></i>',
             '</a >'
         ].join('')
     }
@@ -148,7 +149,7 @@
                         formatter: checkBoxFormat
                     }, {
                         title: 'ردیف',
-                        field: 'ردیف',
+                    field: 'row',
                         rowspan: 2,
                         align: 'center',
                         valign: 'middle',
@@ -159,12 +160,12 @@
                         align: 'center'
                     }],
                     [{
-                        field: 'ShortTitle',
+                    field: 'shortTitle',
                         title: 'عنوان خبر',
                         sortable: true,
                         footerFormatter: totalNameFormatter,
                     },{
-                        field: 'بازدید',
+                    field: 'numberOfVisit',
                         title: 'بازدید',
                         sortable: true,
                         align: 'center'
@@ -187,7 +188,7 @@
                         align: 'center',
                         formatter:commentFormatter
                     },{
-                        field: 'تاریخ انتشار',
+                    field: 'persianPublishDate',
                         title: 'تاریخ انتشار',
                         sortable: true,
                         align: 'center'

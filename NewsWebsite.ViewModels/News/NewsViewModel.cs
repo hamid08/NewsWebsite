@@ -2,6 +2,7 @@
 using NewsWebsite.Common.Attributes;
 using NewsWebsite.Entities;
 using NewsWebsite.Entities.identity;
+using NewsWebsite.ViewModels.News;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;

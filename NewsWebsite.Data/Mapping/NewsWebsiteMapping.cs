@@ -12,6 +12,7 @@ namespace NewsWebsite.Data.Mapping
             modelBuilder.ApplyConfiguration(new BookmarkMapping());
             modelBuilder.ApplyConfiguration(new LikeMapping());
             modelBuilder.ApplyConfiguration(new NewsCategoryMapping());
+            modelBuilder.ApplyConfiguration(new UserCategoryMapping());
             modelBuilder.ApplyConfiguration(new NewsTagMapping());
             modelBuilder.ApplyConfiguration(new VisitMapping());
             modelBuilder.ApplyConfiguration(new CommentMapping());

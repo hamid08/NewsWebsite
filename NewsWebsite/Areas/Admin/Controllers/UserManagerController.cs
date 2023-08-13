@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using NewsWebsite.Common;
 using NewsWebsite.Data.Contracts;
+using NewsWebsite.Entities;
 using NewsWebsite.Entities.identity;
 using NewsWebsite.Services.Contracts;
 using NewsWebsite.ViewModels.DynamicAccess;
@@ -122,9 +123,21 @@ namespace NewsWebsite.Areas.Admin.Controllers
 
             if (userId != null)
             {
-                user = _mapper.Map<UsersViewModel>(await _userManager.FindUserWithRolesByIdAsync((int)userId));
-                user.PersianBirthDate = DateTimeExtensions.ConvertMiladiToShamsi(user.BirthDate,"yyyy/MM/dd");
+                var existUser = await _userManager.FindUserWithRolesByIdAsync((int)userId);
+                user = _mapper.Map<UsersViewModel>(existUser);
+                user.PersianBirthDate = DateTimeExtensions.ConvertMiladiToShamsi(user.BirthDate, "yyyy/MM/dd");
+
+                user.UserCategoriesViewModel = new UserCategoriesViewModel(await _uw.CategoryRepository.GetAllCategoriesAsync(), user.UserCategories.Select(n => n.CategoryId).ToArray());
+
             }
+            else
+            {
+
+                user.UserCategoriesViewModel =
+                    new UserCategoriesViewModel(await _uw.CategoryRepository.GetAllCategoriesAsync(),
+                    null);
+            }
+
 
             return PartialView("_RenderUser", user);
         }
@@ -133,6 +146,8 @@ namespace NewsWebsite.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateOrUpdate(UsersViewModel viewModel)
         {
+            int userId = 0;
+
             ViewBag.Roles = _roleManager.GetAllRoles();
             if (viewModel.Id != null)
             {
@@ -172,14 +187,46 @@ namespace NewsWebsite.Areas.Admin.Controllers
                     result = await _userManager.RemoveFromRolesAsync(user, userRoles);
                     if (result.Succeeded)
                         result = await _userManager.UpdateAsync(user);
+
+                    userId = user.Id;
                 }
 
                 else
                 {
                     await viewModel.ImageFile.UploadFileAsync($"{_env.WebRootPath}/avatars/{viewModel.Image}");
                     viewModel.EmailConfirmed = true;
-                    result = await _userManager.CreateAsync(_mapper.Map<User>(viewModel), viewModel.Password);
+                    var user = _mapper.Map<User>(viewModel);
+
+                    result = await _userManager.CreateAsync(user, viewModel.Password);
+
+                    userId = user.Id;
+
                 }
+
+
+                //User Category
+                var oldUserCategory = await _uw.BaseRepository<UserCategory>()
+                    .FindByConditionAsync(c => c.UserId == userId);
+                if (oldUserCategory.Any())
+                    _uw.BaseRepository<UserCategory>().DeleteRange(oldUserCategory);
+
+                if (viewModel.CategoryIds.Any())
+                {
+                    var userCategory = viewModel.CategoryIds.Select(c => new UserCategory
+                    {
+                        CategoryId = c,
+                        UserId = userId
+
+                    }).ToList();
+
+                    await _uw.BaseRepository<UserCategory>().CreateRangeAsync(userCategory);
+                    await _uw.Commit();
+
+                }
+
+                viewModel.UserCategoriesViewModel =
+                   new UserCategoriesViewModel(await _uw.CategoryRepository.GetAllCategoriesAsync(),
+                   null);
 
                 if (result.Succeeded)
                     TempData["notification"] = OperationSuccess;

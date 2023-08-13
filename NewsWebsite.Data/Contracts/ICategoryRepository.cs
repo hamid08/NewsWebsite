@@ -13,5 +13,6 @@ namespace NewsWebsite.Data.Contracts
         Task<List<TreeViewCategory>> GetAllCategoriesAsync();
         bool IsExistCategory(string categoryName, string recentCategoryId = null);
         Task<List<CategoryViewModel>> GetPaginateCategoriesAsync(int offset, int limit, bool? categoryNameSortAsc, bool? parentCategoryNameSortAsc, string searchText);
+        Task<List<TreeViewCategory>> GetAllUserCategoriesAsync(List<string> userCategoryIds);
     }
 }

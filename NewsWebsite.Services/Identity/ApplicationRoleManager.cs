@@ -3,13 +3,13 @@ using Microsoft.Extensions.Logging;
 using NewsWebsite.Entities.identity;
 using NewsWebsite.Services.Contracts;
 using NewsWebsite.ViewModels.RoleManager;
-using NewsWebsite.ViewModels.UserManager;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using System;
 using NewsWebsite.Common;
+using NewsWebsite.ViewModels.UserManager;
 
 namespace NewsWebsite.Services.Identity
 {

@@ -31,6 +31,7 @@ namespace NewsWebsite.Data.UnitOfWork
             return repository;
         }
 
+
         public ICategoryRepository CategoryRepository
         {
             get

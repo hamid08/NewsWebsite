@@ -7,11 +7,11 @@ using NewsWebsite.ViewModels.Manage;
 using NewsWebsite.ViewModels.News;
 using NewsWebsite.ViewModels.RoleManager;
 using NewsWebsite.ViewModels.Tag;
-using NewsWebsite.ViewModels.UserManager;
 using NewsWebsite.ViewModels.Video;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using NewsWebsite.ViewModels.UserManager;
 
 namespace NewsWebsite.IocConfig.AutoMapper
 {

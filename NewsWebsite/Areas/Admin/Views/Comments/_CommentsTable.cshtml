@@ -64,11 +64,11 @@
 
      function operateFormatter(value, row, index) {
         return [
-            '<button type="button" class="btn-link text-success" data-toggle="ajax-modal" data-url=@Url.Action("ConfirmOrInconfirm", "Comments")?commentId=' + row.Id + ' title="تایید / عدم تایید">',
+            '<button type="button" class="btn-link text-success" data-toggle="ajax-modal" data-url=@Url.Action("ConfirmOrInconfirm", "Comments")?commentId=' + row.commentId + ' title="تایید / عدم تایید">',
             '<i class="fa fa-check"></i>',
             '</button >',
 
-            '<button type="button" class="btn-link text-danger" data-toggle="ajax-modal" data-url=@Url.Action("Delete", "Comments")/?commentId=' + row.Id + ' title="حذف">',
+            '<button type="button" class="btn-link text-danger" data-toggle="ajax-modal" data-url=@Url.Action("Delete", "Comments")/?commentId=' + row.commentId + ' title="حذف">',
             '<i class="fa fa-trash"></i>',
             '</button >'
         ].join('')
@@ -77,7 +77,7 @@
    function isConfirmFormatter(value, row, index) {
        var spanClass = "badge badge-success";
        var IsConfirm = "تایید شده";
-       if (!row.IsConfirm) {
+        if (!row.isConfirm) {
            IsConfirm = "تایید نشده";
            spanClass = "badge badge-danger";
        }
@@ -114,7 +114,7 @@
                         formatter: checkBoxFormat
                     }, {
                         title: 'ردیف',
-                        field: 'ردیف',
+                    field: 'row',
                         rowspan: 2,
                         align: 'center',
                         valign: 'middle',
@@ -125,16 +125,15 @@
                         align: 'center'
                     }],
                     [{
-                        field: 'نام',
+                    field: 'name',
                         title: 'نام',
                         sortable: true,
-                        footerFormatter: totalNameFormatter,
                     },{
-                        field: 'ایمیل',
+                    field: 'email',
                         title: 'ایمیل',
                         sortable: true,
                     },{
-                        field: 'تاریخ ارسال',
+                    field: 'persianPostageDateTime',
                         title: 'تاریخ ارسال',
                         align: 'center',
                         sortable: true,

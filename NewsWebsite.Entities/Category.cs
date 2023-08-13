@@ -20,5 +20,7 @@ namespace NewsWebsite.Entities
         public virtual Category Parent { get; set; }
         public virtual List<Category> Categories { get; set; }
 
+        public virtual ICollection<UserCategory> UserCategories { get; set; }
+
     }
 }

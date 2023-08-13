@@ -22,6 +22,8 @@ namespace NewsWebsite.Entities.identity
         public virtual ICollection<Bookmark> Bookmarks { get; set; }
         public virtual ICollection<UserRole> Roles { get; set; }
         public virtual ICollection<UserClaim> Claims { get; set; }
+        public virtual ICollection<UserCategory> UserCategories { get; set; }
+
 
     }
 

@@ -73,11 +73,11 @@
 
      function operateFormatter(value, row, index) {
         return [
-            '<button type="button" class="btn-link text-success" data-toggle="ajax-modal" data-url=@Url.Action("RenderVideo", "Video")?videoId=' + row.Id + ' title="ویرایش">',
+            '<button type="button" class="btn-link text-success" data-toggle="ajax-modal" data-url=@Url.Action("RenderVideo", "Video")?videoId=' + row.videoId + ' title="ویرایش">',
             '<i class="fa fa-edit"></i>',
             '</button >',
 
-            '<button type="button" class="btn-link text-danger" data-toggle="ajax-modal" data-url=@Url.Action("Delete", "Video")/?videoId=' + row.Id + ' title="حذف">',
+            '<button type="button" class="btn-link text-danger" data-toggle="ajax-modal" data-url=@Url.Action("Delete", "Video")/?videoId=' + row.videoId + ' title="حذف">',
             '<i class="fa fa-trash"></i>',
             '</button >'
         ].join('')
@@ -111,7 +111,7 @@
                         formatter: checkBoxFormat
                     }, {
                         title: 'ردیف',
-                        field: 'ردیف',
+                    field: 'row',
                         rowspan: 2,
                         align: 'center',
                         valign: 'middle',
@@ -122,12 +122,11 @@
                         align: 'center'
                     }],
                     [{
-                        field: 'عنوان ویدیو',
+                    field: 'title',
                         title: 'عنوان ویدیو',
                         sortable: true,
-                        footerFormatter: totalNameFormatter,
                     },{
-                        field: 'تاریخ انتشار',
+                    field: 'persianPublishDateTime',
                         title: 'تاریخ انتشار',
                         sortable: true,
                         align: 'center'

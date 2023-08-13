@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using NewsWebsite.Entities;
 using NewsWebsite.Entities.identity;
 using System;
 using System.Collections.Generic;
@@ -107,5 +108,13 @@ namespace NewsWebsite.ViewModels.UserManager
 
         [JsonIgnore]
         public DateTimeOffset? LockoutEnd { get; set; }
+
+        [JsonIgnore]
+        public string[] CategoryIds { get; set; }
+
+        [JsonIgnore]
+        public UserCategoriesViewModel UserCategoriesViewModel { get; set; }
+        [JsonIgnore]
+        public virtual ICollection<UserCategory> UserCategories { get; set; }
     }
 }

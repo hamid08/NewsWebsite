@@ -2,7 +2,6 @@
 
 <div class="classynav">
     <ul>
-        <li class="active"><a asp-action="Index" asp-controller="Home">خانه</a></li>
         @foreach (var item in Model.OrderBy(t=>t.title))
         {
             <li>
@@ -20,7 +19,9 @@
 
             </li>
         }
-
         <li><a href="/Videos">ویدیوها</a></li>
+        <li class="active"><a asp-action="Index" asp-controller="Home">خانه</a></li>
+
+
     </ul>
 </div>

@@ -14,6 +14,7 @@ using NewsWebsite.Common;
 using NewsWebsite.Common.Attributes;
 using NewsWebsite.Data.Contracts;
 using NewsWebsite.Entities;
+using NewsWebsite.Entities.identity;
 using NewsWebsite.ViewModels.DynamicAccess;
 using NewsWebsite.ViewModels.News;
 
@@ -63,9 +64,9 @@ namespace NewsWebsite.Areas.Admin.Controllers
             if (sort == "ShortTitle")
             {
                 if (order == "asc")
-                    news =await _uw.NewsRepository.GetPaginateNews(offset, limit,item=>item.First().Title,item=>"", search,null,null);
+                    news = await _uw.NewsRepository.GetPaginateNews(offset, limit, item => item.First().Title, item => "", search, null, null);
                 else
-                    news = await _uw.NewsRepository.GetPaginateNews(offset, limit,item=>"", item => item.First().Title, search, null,null);
+                    news = await _uw.NewsRepository.GetPaginateNews(offset, limit, item => "", item => item.First().Title, search, null, null);
             }
 
             else if (sort == "بازدید")
@@ -114,31 +115,39 @@ namespace NewsWebsite.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> CreateOrUpdate(string newsId)
         {
+            var oldUserCategory = await _uw.BaseRepository<UserCategory>()
+            .FindByConditionAsync(c => c.UserId.ToString() == User.Identity.GetUserId());
+
+            var userCategoryIds = oldUserCategory.Select(c => c.CategoryId).ToList();
+
+            var reallyCategories = await _uw.CategoryRepository.GetAllUserCategoriesAsync(userCategoryIds);
+
+
             NewsViewModel newsViewModel = new NewsViewModel();
             ViewBag.Tags = _uw._Context.Tags.Select(t => t.TagName).ToList();
-            newsViewModel.NewsCategoriesViewModel = new NewsCategoriesViewModel(await _uw.CategoryRepository.GetAllCategoriesAsync(), null);
+            newsViewModel.NewsCategoriesViewModel = new NewsCategoriesViewModel(reallyCategories, null);
             if (newsId.HasValue())
             {
                 var news = await (from n in _uw._Context.News.Include(c => c.NewsCategories)
-                            join w in _uw._Context.NewsTags on n.NewsId equals w.NewsId into bc
-                            from bct in bc.DefaultIfEmpty()
-                            join t in _uw._Context.Tags on bct.TagId equals t.TagId into cg
-                            from cog in cg.DefaultIfEmpty()
-                            where (n.NewsId == newsId)
-                            select new NewsViewModel
-                            {
-                                NewsId = n.NewsId,
-                                Title = n.Title,
-                                Abstract=n.Abstract,
-                                Description = n.Description,
-                                PublishDateTime = n.PublishDateTime,
-                                IsPublish = n.IsPublish,
-                                ImageName = n.ImageName,
-                                IsInternal = n.IsInternal,
-                                NewsCategories = n.NewsCategories,
-                                Url = n.Url,
-                                NameOfTags = cog!=null? cog.TagName:"",
-                            }).ToListAsync();
+                                  join w in _uw._Context.NewsTags on n.NewsId equals w.NewsId into bc
+                                  from bct in bc.DefaultIfEmpty()
+                                  join t in _uw._Context.Tags on bct.TagId equals t.TagId into cg
+                                  from cog in cg.DefaultIfEmpty()
+                                  where (n.NewsId == newsId)
+                                  select new NewsViewModel
+                                  {
+                                      NewsId = n.NewsId,
+                                      Title = n.Title,
+                                      Abstract = n.Abstract,
+                                      Description = n.Description,
+                                      PublishDateTime = n.PublishDateTime,
+                                      IsPublish = n.IsPublish,
+                                      ImageName = n.ImageName,
+                                      IsInternal = n.IsInternal,
+                                      NewsCategories = n.NewsCategories,
+                                      Url = n.Url,
+                                      NameOfTags = cog != null ? cog.TagName : "",
+                                  }).ToListAsync();
 
                 if (news != null)
                 {
@@ -146,10 +155,12 @@ namespace NewsWebsite.Areas.Admin.Controllers
                     if (news.FirstOrDefault().PublishDateTime > DateTime.Now)
                     {
                         newsViewModel.FuturePublish = true;
-                        newsViewModel.PersianPublishDate = DateTimeExtensions.ConvertMiladiToShamsi(news.FirstOrDefault().PublishDateTime,"yyyy/MM/dd");
+                        newsViewModel.PersianPublishDate = DateTimeExtensions.ConvertMiladiToShamsi(news.FirstOrDefault().PublishDateTime, "yyyy/MM/dd");
                         newsViewModel.PersianPublishTime = news.FirstOrDefault().PublishDateTime.Value.TimeOfDay.ToString();
                     }
-                    newsViewModel.NewsCategoriesViewModel = new NewsCategoriesViewModel(await _uw.CategoryRepository.GetAllCategoriesAsync(),news.FirstOrDefault().NewsCategories.Select(n=>n.CategoryId).ToArray());
+
+
+                    newsViewModel.NewsCategoriesViewModel = new NewsCategoriesViewModel(reallyCategories, news.FirstOrDefault().NewsCategories.Select(n => n.CategoryId).ToArray());
                     newsViewModel.NameOfTags = news.Select(t => t.NameOfTags).ToArray().CombineWith(',');
                 }
 
@@ -159,17 +170,17 @@ namespace NewsWebsite.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateOrUpdate(NewsViewModel viewModel,string submitButton)
+        public async Task<IActionResult> CreateOrUpdate(NewsViewModel viewModel, string submitButton)
         {
             viewModel.Url = viewModel.Url.Trim();
             ViewBag.Tags = _uw._Context.Tags.Select(t => t.TagName).ToList();
-            viewModel.NewsCategoriesViewModel = new NewsCategoriesViewModel(await _uw.CategoryRepository.GetAllCategoriesAsync(),viewModel.CategoryIds);
+            viewModel.NewsCategoriesViewModel = new NewsCategoriesViewModel(await _uw.CategoryRepository.GetAllCategoriesAsync(), viewModel.CategoryIds);
             if (!viewModel.FuturePublish)
             {
                 ModelState.Remove("PersianPublishTime");
                 ModelState.Remove("PersianPublishDate");
             }
-            if(viewModel.NewsId.HasValue())
+            if (viewModel.NewsId.HasValue())
                 ModelState.Remove("ImageFile");
 
             if (ModelState.IsValid)
@@ -182,7 +193,7 @@ namespace NewsWebsite.Areas.Admin.Controllers
 
                 if (viewModel.NewsId.HasValue())
                 {
-                    var news = _uw.BaseRepository<News>().FindByConditionAsync(n=>n.NewsId==viewModel.NewsId,null,n => n.NewsCategories,n=>n.NewsTags).Result.FirstOrDefault();
+                    var news = _uw.BaseRepository<News>().FindByConditionAsync(n => n.NewsId == viewModel.NewsId, null, n => n.NewsCategories, n => n.NewsTags).Result.FirstOrDefault();
                     if (news == null)
                         ModelState.AddModelError(string.Empty, NewsNotFound);
                     else
@@ -246,7 +257,7 @@ namespace NewsWebsite.Areas.Admin.Controllers
                     }
 
                     if (viewModel.CategoryIds != null)
-                        viewModel.NewsCategories=viewModel.CategoryIds.Select(c=>new NewsCategory { CategoryId = c }).ToList();
+                        viewModel.NewsCategories = viewModel.CategoryIds.Select(c => new NewsCategory { CategoryId = c }).ToList();
                     else
                         viewModel.NewsCategories = null;
 
@@ -285,22 +296,24 @@ namespace NewsWebsite.Areas.Admin.Controllers
         [HttpPost, ActionName("Delete"), AjaxOnly]
         public async Task<IActionResult> DeleteConfirmed(News model)
         {
-            if (model.NewsId == null)
-                ModelState.AddModelError(string.Empty, NewsNotFound);
-            else
-            {
-                var news = await _uw.BaseRepository<News>().FindByIdAsync(model.NewsId);
-                if (news == null)
+                if (model.NewsId == null)
                     ModelState.AddModelError(string.Empty, NewsNotFound);
                 else
                 {
-                    _uw.BaseRepository<News>().Delete(news);
-                    await _uw.Commit();
-                    FileExtensions.DeleteFile($"{_env.WebRootPath}/newsImage/{news.ImageName}");
-                    TempData["notification"] = DeleteSuccess;
-                    return PartialView("_DeleteConfirmation", news);
+                    var news = await _uw.BaseRepository<News>().FindByIdAsync(model.NewsId);
+                    if (news == null)
+                        ModelState.AddModelError(string.Empty, NewsNotFound);
+                    else
+                    {
+                        _uw.BaseRepository<News>().Delete(news);
+                        await _uw.Commit();
+                        FileExtensions.DeleteFile($"{_env.WebRootPath}/newsImage/{news.ImageName}");
+                        TempData["notification"] = DeleteSuccess;
+                        return PartialView("_DeleteConfirmation", news);
+                    }
                 }
-            }
+            
+          
             return PartialView("_DeleteConfirmation");
         }
 
