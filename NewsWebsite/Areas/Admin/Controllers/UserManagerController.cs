@@ -234,6 +234,10 @@ namespace NewsWebsite.Areas.Admin.Controllers
                     ModelState.AddErrorsFromResult(result);
             }
 
+            viewModel.UserCategoriesViewModel =
+                    new UserCategoriesViewModel(await _uw.CategoryRepository.GetAllCategoriesAsync(),
+                    null);
+
             return PartialView("_RenderUser", viewModel);
         }
 
