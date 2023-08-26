@@ -23,7 +23,7 @@ namespace NewsWebsite.Controllers
             _accessor = accessor;
         }
 
-        public async Task<IActionResult> Index(string duration,string TypeOfNews)
+        public async Task<IActionResult> Index(string duration, string TypeOfNews)
         {
             var isAjax = Request.Headers["X-Requested-With"] == "XMLHttpRequest";
             if (isAjax && TypeOfNews == "MostViewedNews")
@@ -36,17 +36,17 @@ namespace NewsWebsite.Controllers
             else
             {
                 int countNewsPublished = _uw.NewsRepository.CountNewsPublished();
-                var news = await _uw.NewsRepository.GetPaginateNews(0, 10, item => "", item => item.First().PersianPublishDate, "", true , null);
-                var mostViewedNews =  await _uw.NewsRepository.MostViewedNews(0, 3, "day");
-                var mostTalkNews =  await _uw.NewsRepository.MostTalkNews(0, 5, "day");
+                var news = await _uw.NewsRepository.GetPaginateNews(0, 10, item => "", item => item.First().PersianPublishDate, "", true, null);
+                var mostViewedNews = await _uw.NewsRepository.MostViewedNews(0, 3, "day");
+                var mostTalkNews = await _uw.NewsRepository.MostTalkNews(0, 5, "day");
                 var mostPopulerNews = await _uw.NewsRepository.MostPopularNews(0, 5);
                 var internalNews = await _uw.NewsRepository.GetPaginateNews(0, 10, item => "", item => item.First().PersianPublishDate, "", true, true);
                 var foreignNews = await _uw.NewsRepository.GetPaginateNews(0, 10, item => "", item => item.First().PersianPublishDate, "", true, false);
-                var videos = _uw.VideoRepository.GetPaginateVideos(0, 10,item=>"",item=>item.PersianPublishDateTime, "");
-                var homePageViewModel = new HomePageViewModel(news, mostViewedNews,mostTalkNews,mostPopulerNews,internalNews,foreignNews, videos, countNewsPublished);
+                var videos = _uw.VideoRepository.GetPaginateVideos(0, 10, item => "", item => item.PersianPublishDateTime, "");
+                var homePageViewModel = new HomePageViewModel(news, mostViewedNews, mostTalkNews, mostPopulerNews, internalNews, foreignNews, videos, countNewsPublished);
                 return View(homePageViewModel);
             }
-           
+
         }
 
         [Route("News/{newsId}/{url}")]
@@ -70,7 +70,7 @@ namespace NewsWebsite.Controllers
             var news = await _uw.NewsRepository.GetNewsById(newsId);
             var newsComments = await _uw.NewsRepository.GetNewsCommentsAsync(newsId);
             var nextAndPreviousNews = await _uw.NewsRepository.GetNextAndPreviousNews(news.PublishDateTime);
-            var newsRelated =  await _uw.NewsRepository.GetRelatedNews(2, news.TagIdsList, newsId);
+            var newsRelated = await _uw.NewsRepository.GetRelatedNews(2, news.TagIdsList, newsId);
             var newsDetailsViewModel = new NewsDetailsViewModel(news, newsComments, newsRelated, nextAndPreviousNews);
             return View(newsDetailsViewModel);
         }
@@ -80,9 +80,26 @@ namespace NewsWebsite.Controllers
         public async Task<IActionResult> GetNewsPaginate(int limit, int offset)
         {
             int countNewsPublished = _uw.NewsRepository.CountNewsPublished();
-            var news = await _uw.NewsRepository.GetPaginateNews(offset, limit, item => "", item => item.First().PersianPublishDate, "", true,null);
+            var news = await _uw.NewsRepository.GetPaginateNews(offset, limit, item => "", item => item.First().PersianPublishDate, "", true, null);
             return PartialView("_NewsPaginate", new NewsPaginateViewModel(countNewsPublished, news));
         }
+
+      
+        public async Task<IActionResult> NewsInSearch(string search)
+        {
+            var news = await _uw.NewsRepository.GetNewsBySearch(search);
+
+            ViewBag.Search = search;
+
+            var mostTalkNews = await _uw.NewsRepository.MostTalkNews(0, 5, "day");
+            var mostPopulerNews = await _uw.NewsRepository.MostPopularNews(0, 5);
+
+            var homePageViewModel = new HomePageViewModel(news, null, mostTalkNews, mostPopulerNews, null, null, null, 0);
+            return View("NewsInSearch", homePageViewModel);
+
+
+        }
+
 
 
         [Route("Category/{categoryId}/{url}")]
@@ -109,7 +126,7 @@ namespace NewsWebsite.Controllers
 
                 }
 
-               
+
 
             }
         }
@@ -143,7 +160,7 @@ namespace NewsWebsite.Controllers
         [Route("Videos")]
         public async Task<IActionResult> Videos()
         {
-            var vidoes= await _uw.BaseRepository<Video>().FindAllAsync();
+            var vidoes = await _uw.BaseRepository<Video>().FindAllAsync();
 
             return View(vidoes);
         }

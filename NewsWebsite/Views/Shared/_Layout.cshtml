@@ -11,7 +11,8 @@
     <title>پایگاه خبری تیپ 45</title>
 
     <!-- Favicon -->
-    <link rel="icon" href="/assets/img/core-img/favicon.ico">
+    @*<link rel="icon" href="/assets/img/core-img/favicon.ico">*@
+    <link rel="icon" href="/assets/img/core-img/icons8-news-100.png">
 
     <!-- Stylesheet -->
     <link rel="stylesheet" href="~/css/style.css">
@@ -56,10 +57,10 @@
                             </div>
                             <!-- Top Search Area -->
                             <div class="top-search-area">
-                              @*  <form action="index.html" method="post">
-                                    <input type="search" name="top-search" id="topSearch" placeholder="جستجو ...">
+                                <form asp-controller="Home" asp-action="NewsInSearch">
+                                    <input type="search" name="search" id="search" placeholder="جستجو ...">
                                     <button type="submit" class="btn"><i class="fa fa-search" aria-hidden="true"></i></button>
-                                </form>*@
+                                </form>
                             </div>
                             <!-- Login -->
                             <a  class="login-btn"></a>
@@ -133,9 +134,9 @@
                         <h6 class="widget-title">اطلاعات تماس</h6>
                         <!-- Contact Address -->
                         <div class="contact-address">
-                            <p>شوشتر ، تیپ 45 نیرو مخصوص </p>
-                            <p>موبایل و تلگرام : </p>
-                            <p>آدرس ایمیل:</p>
+                            <p>آدرس : شوشتر ، تیپ 45 نیرو مخصوص </p>
+                            <p>موبایل و تلگرام :... </p>
+                            <p>آدرس ایمیل : ...</p>
                         </div>
                         <!-- Footer Social Area -->
                         <div class="footer-social-area">

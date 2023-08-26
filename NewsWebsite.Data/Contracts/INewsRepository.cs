@@ -25,5 +25,6 @@ namespace NewsWebsite.Data.Contracts
         Task<List<NewsViewModel>> GetNextAndPreviousNews(DateTime? PublishDateTime);
         Task<List<NewsViewModel>> GetRelatedNews(int number, List<string> tagIdList, string newsId);
         Task<List<NewsViewModel>> GetNewsInCategoryAndTag(string categoryId, string TagId);
+        Task<List<NewsViewModel>> GetNewsBySearch(string search);
     }
 }
