@@ -34,7 +34,7 @@ namespace NewsWebsite.Areas.Admin.Controllers
         {
             var model = new ReportViewModel();
 
-            var userCount = await _userManager.Users.CountAsync();
+            var userCount = await _userManager.Users.Where(c=> !c.IsDelete).CountAsync();
 
             model.UserCount = userCount;
 

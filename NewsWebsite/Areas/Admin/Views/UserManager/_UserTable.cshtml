@@ -6,7 +6,7 @@
 <div id="toolbar">
     @if (securityTrimmingService.CanUserAccess(User, "Admin", "UserManager", "RenderUser") == true) {
         <button type="button" class="btn btn-success" data-toggle="ajax-modal" data-url="@Url.Action("RenderUser", "UserManager")">
-            <i class="fa fa-plus"></i> | افزودن مشتری جدید
+            <i class="fa fa-plus"></i> | افزودن کاربر جدید
         </button>
     }
     @if (securityTrimmingService.CanUserAccess(User, "Admin", "UserManager", "DeleteGroup") == true) {

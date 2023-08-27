@@ -6,6 +6,7 @@ using NewsWebsite.Entities;
 using NewsWebsite.Entities.identity;
 using System;
 using System.Collections.Generic;
+using System.Reflection.Emit;
 using System.Text;
 
 namespace NewsWebsite.Data
@@ -27,7 +28,10 @@ namespace NewsWebsite.Data
             builder.Entity<Newsletter>().Property(b => b.RegisterDateTime).HasDefaultValueSql("CONVERT(datetime,GetDate())");
             builder.Entity<User>().Property(b => b.IsActive).HasDefaultValueSql("1");
             builder.Entity<Newsletter>().Property(b => b.IsActive).HasDefaultValueSql("1");
+
+            //builder.Entity<User>().HasQueryFilter(p => !p.IsDelete);
         }
+
 
         public virtual DbSet<Category> Categories { set; get; }
         public virtual DbSet<News> News { set; get; }

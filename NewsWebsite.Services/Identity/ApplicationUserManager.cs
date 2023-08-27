@@ -124,7 +124,7 @@ namespace NewsWebsite.Services.Identity
                   || t.UserName.Contains(searchText)
                   || (t.RegisterDateTime >= getDateTimesForSearch.First() 
                   && t.RegisterDateTime <= getDateTimesForSearch.Last()))
-                  
+                  .Where(c=> !c.IsDelete)
                   .Select(user => new UsersViewModel
                   {
                       Id = user.Id,
