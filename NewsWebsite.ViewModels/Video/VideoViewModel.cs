@@ -15,12 +15,16 @@ namespace NewsWebsite.ViewModels.Video
         [JsonProperty("ردیف")]
         public int Row { get; set; }
 
+        [Required(ErrorMessage = "انتخاب {0} الزامی است.")]
+        [JsonProperty("فایل ویدیو")]
+        [Display(Name ="فایل ویدیو")]
+        public IFormFile VideoFile { get; set; }
+
+
         [JsonProperty("عنوان ویدیو"),Display(Name ="عنوان ویدیو")]
         [Required(ErrorMessage = "وارد نمودن {0} الزامی است.")]
         public string Title { get; set; }
 
-        [Display(Name = "آدرس ویدیو"),Url(ErrorMessage ="آدرس وارد شده نا معتبر است.")]
-        [Required(ErrorMessage = "وارد نمودن {0} الزامی است.")]
         public string Url { get; set; }
 
         [Display(Name = "پوستر ویدیو"),JsonIgnore]

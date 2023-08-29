@@ -73,9 +73,9 @@
 
      function operateFormatter(value, row, index) {
         return [
-            '<button type="button" class="btn-link text-success" data-toggle="ajax-modal" data-url=@Url.Action("RenderVideo", "Video")?videoId=' + row.videoId + ' title="ویرایش">',
-            '<i class="fa fa-edit"></i>',
-            '</button >',
+            //'<button type="button" class="btn-link text-success" data-toggle="ajax-modal" data-url=@Url.Action("RenderVideo", "Video")?videoId=' + row.videoId + ' title="ویرایش">',
+            //'<i class="fa fa-edit"></i>',
+            //'</button >',
 
             '<button type="button" class="btn-link text-danger" data-toggle="ajax-modal" data-url=@Url.Action("Delete", "Video")/?videoId=' + row.videoId + ' title="حذف">',
             '<i class="fa fa-trash"></i>',
@@ -84,7 +84,7 @@
     }
 
      function checkBoxFormat(value, row) {
-       return '<input type="checkbox" name="btSelectItem" value="' + row.Id + '" />';
+        return '<input type="checkbox" name="btSelectItem" value="' + row.videoId + '" />';
     }
 
 

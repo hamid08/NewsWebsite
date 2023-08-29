@@ -504,24 +504,24 @@ namespace NewsWebsite.Common
 
         public static async Task<UploadFileResult> UploadFileAsync(this IFormFile file, string path)
         {
-            string FileExtension = Path.GetExtension(file.FileName);
-            var types = FileType.Image;
+            //string FileExtension = Path.GetExtension(file.FileName);
+            //var types = FileType.Image;
             bool result = true;
             using (var memory = new MemoryStream())
             {
                 await file.CopyToAsync(memory);
-                result = IsValidFile(memory.ToArray(), types, FileExtension.Replace('.', ' '));
-                if (result)
-                {
+                //result = IsValidFile(memory.ToArray(), types, FileExtension.Replace('.', ' '));
+                //if (result)
+                //{
                     using (var stream = new FileStream(path, FileMode.Create))
                     {
                         await file.CopyToAsync(stream);
                     }
 
                     return new UploadFileResult(true, null);
-                }
-                else
-                    return new UploadFileResult(false, new List<string>() { "فایل انتخاب شده معتبر نمی باشد." });
+                //}
+                //else
+                //    return new UploadFileResult(false, new List<string>() { "فایل انتخاب شده معتبر نمی باشد." });
             }
         }
 

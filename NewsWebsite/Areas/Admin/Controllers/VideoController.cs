@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NewsWebsite.Common;
 using NewsWebsite.Common.Attributes;
@@ -93,7 +95,18 @@ namespace NewsWebsite.Areas.Admin.Controllers
             {
                 var video = await _uw.BaseRepository<Video>().FindByIdAsync(videoId);
                 if (video != null)
+                {
                     videoViewModel = _mapper.Map<VideoViewModel>(video);
+                
+                    string path = $"{_env.WebRootPath}/videos/{video.Url}";
+                    using (var stream = System.IO.File.OpenRead(path))
+                    {
+                        videoViewModel.VideoFile = new FormFile(stream, 0, stream.Length, null, Path.GetFileName(stream.Name));
+                      
+                    }
+
+
+                }
                 else
                     ModelState.AddModelError(string.Empty,VideoNotFound);
             }
@@ -108,7 +121,11 @@ namespace NewsWebsite.Areas.Admin.Controllers
 
             if (ModelState.IsValid)
             {
-                if(viewModel.PosterFile!=null)
+                var videoFileName = Guid.NewGuid().ToString().Substring(0,8) + viewModel.VideoFile.FileName;
+                await viewModel.VideoFile.UploadFileAsync($"{_env.WebRootPath}/videos/{videoFileName}");
+
+
+                if (viewModel.PosterFile!=null)
                 {
                     viewModel.Poster = _uw.VideoRepository.CheckVideoFileName(viewModel.PosterFile.FileName);
                     await viewModel.PosterFile.UploadFileAsync($"{_env.WebRootPath}/posters/{viewModel.Poster}");
@@ -121,12 +138,22 @@ namespace NewsWebsite.Areas.Admin.Controllers
                     if (video != null)
                     {
                         if(viewModel.PosterFile != null)
+                        {
                             FileExtensions.DeleteFile($"{_env.WebRootPath}/posters/{video.Poster}");
+
+                        }
                         else
                             viewModel.Poster = video.Poster;
 
+                        FileExtensions.DeleteFile($"{_env.WebRootPath}/videos/{video.Url}");
+
+
+
                         viewModel.PublishDateTime = video.PublishDateTime;
-                        _uw.BaseRepository<Video>().Update(_mapper.Map(viewModel, video));
+                        var newVideo = _mapper.Map(viewModel, video);
+                        newVideo.Url = videoFileName;
+
+                        _uw.BaseRepository<Video>().Update(newVideo);
                         await _uw.Commit();
                         TempData["notification"] = EditSuccess;
                     }
@@ -137,7 +164,11 @@ namespace NewsWebsite.Areas.Admin.Controllers
                 else
                 {
                     viewModel.VideoId = StringExtensions.GenerateId(10);
-                    await _uw.BaseRepository<Video>().CreateAsync(_mapper.Map<Video>(viewModel));
+                    var newVideo = _mapper.Map<Video>(viewModel);
+                    newVideo.Url = videoFileName;
+
+
+                    await _uw.BaseRepository<Video>().CreateAsync(newVideo);
                     await _uw.Commit();
                     TempData["notification"] = InsertSuccess;
                 }
@@ -177,6 +208,9 @@ namespace NewsWebsite.Areas.Admin.Controllers
                 else
                 {
                     FileExtensions.DeleteFile($"{_env.WebRootPath}/posters/{video.Poster}");
+                    FileExtensions.DeleteFile($"{_env.WebRootPath}/videos/{video.Url}");
+
+
                     _uw.BaseRepository<Video>().Delete(video);
                     await _uw.Commit();
                     TempData["notification"] = DeleteSuccess;
@@ -187,7 +221,7 @@ namespace NewsWebsite.Areas.Admin.Controllers
         }
 
 
-        [HttpPost, ActionName("DeleteGroup"), AjaxOnly()]
+        [HttpPost, ActionName("DeleteGroup")]
         public async Task<IActionResult> DeleteGroupConfirmed(string[] btSelectItem)
         {
             if (btSelectItem.Count() == 0)
@@ -200,6 +234,8 @@ namespace NewsWebsite.Areas.Admin.Controllers
                     _uw.BaseRepository<Video>().Delete(video);
                     await _uw.Commit();
                     FileExtensions.DeleteFile($"{_env.WebRootPath}/posters/{video.Poster}");
+                    FileExtensions.DeleteFile($"{_env.WebRootPath}/videos/{video.Url}");
+
                 }
                 TempData["notification"] = "حذف گروهی اطلاعات با موفقیت انجام شد.";
             }
