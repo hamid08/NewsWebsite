@@ -9,6 +9,7 @@ namespace NewsWebsite.Data.Contracts
     {
         IBaseRepository<TEntity> BaseRepository<TEntity>() where TEntity : class;
         ICategoryRepository CategoryRepository { get; }
+        ISaleRepository SaleRepository { get; }
         ITagRepository TagRepository { get; }
         IVideoRepository VideoRepository { get; }
         INewsRepository NewsRepository { get; }

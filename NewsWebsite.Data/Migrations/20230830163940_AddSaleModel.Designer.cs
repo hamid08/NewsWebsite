@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NewsWebsite.Data;
 
 namespace NewsWebsite.Data.Migrations
 {
     [DbContext(typeof(NewsDBContext))]
-    partial class NewsDBContextModelSnapshot : ModelSnapshot
+    [Migration("20230830163940_AddSaleModel")]
+    partial class AddSaleModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -269,9 +271,6 @@ namespace NewsWebsite.Data.Migrations
                     b.Property<string>("TerminalCaption")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("TerminalId")
-                        .HasColumnType("int");
-
                     b.Property<long>("TotalFare")
                         .HasColumnType("bigint");
 
@@ -280,9 +279,6 @@ namespace NewsWebsite.Data.Migrations
 
                     b.Property<long>("TransportationUnitValue")
                         .HasColumnType("bigint");
-
-                    b.Property<int>("TripType")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 

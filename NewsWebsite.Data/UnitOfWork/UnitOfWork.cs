@@ -13,6 +13,7 @@ namespace NewsWebsite.Data.UnitOfWork
         public NewsDBContext _Context { get; }
         private IMapper _mapper;
         private ICategoryRepository _categoryRepository;
+        private ISaleRepository _saleRepository;
         private ITagRepository _tagRepository;
         private IVideoRepository _videoRepository;
         private INewsRepository _newsRepository;
@@ -40,6 +41,16 @@ namespace NewsWebsite.Data.UnitOfWork
                     _categoryRepository = new CategoryRepository(_Context,_mapper);
 
                 return _categoryRepository;
+            }
+        }
+          public ISaleRepository SaleRepository
+        {
+            get
+            {
+                if (_saleRepository == null)
+                    _saleRepository = new SaleRepository(_Context,_mapper);
+
+                return _saleRepository;
             }
         }
 

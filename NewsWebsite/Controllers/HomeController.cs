@@ -1,9 +1,13 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using EFCore.BulkExtensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using NewsWebsite.Common;
 using NewsWebsite.Data.Contracts;
 using NewsWebsite.Entities;
@@ -17,14 +21,107 @@ namespace NewsWebsite.Controllers
     {
         private readonly IUnitOfWork _uw;
         private readonly IHttpContextAccessor _accessor;
+        private DateTime Start;
+        private TimeSpan TimeSpan;
+
         public HomeController(IUnitOfWork uw, IHttpContextAccessor accessor)
         {
             _uw = uw;
             _accessor = accessor;
         }
 
+
+        public class SaleViewModel : Sale
+        {
+            public int SaleCount { get; set; }
+        }
+
+
         public async Task<IActionResult> Index(string duration, string TypeOfNews)
         {
+            //Random rnd = new Random();
+
+            //var sales = new List<Sale>();
+
+
+            //for (int i = 0; i < 200000; i++)
+            //{
+            //    sales.Add(new Sale
+            //    {
+            //        DriverValue = rnd.Next(0, 8),
+            //        SumTotal = rnd.Next(0, 8),
+            //        TotalFare = rnd.Next(0, 8),
+            //        TransportationCompanyValue = rnd.Next(0, 8),
+            //        TransportationUnitValue = rnd.Next(0, 8),
+
+            //        TripType = (TripType)rnd.Next(0, 2),
+            //        TerminalCaption = "Terminal" + i,
+            //        TerminalId = 4
+
+            //    });
+
+            //}
+            //Start = DateTime.Now;
+            //using (var transaction = _uw._Context.Database.BeginTransaction())
+            //{
+            //    await _uw._Context.BulkInsertAsync(sales);
+
+            //    transaction.Commit();
+            //}
+            //TimeSpan = DateTime.Now - Start; 
+
+
+            //var query = await (from saleDb in _uw._Context.Sales.AsNoTracking()
+            //            select new
+            //            {
+            //                TerminalCaption = saleDb.TerminalCaption,
+            //                DriverValue = saleDb.DriverValue,
+            //                SumTotal = saleDb.SumTotal,
+            //                TerminalId = saleDb.TerminalId,
+            //                TotalFare = saleDb.TotalFare,
+            //                TransportationCompanyValue = saleDb.TransportationCompanyValue,
+            //                TransportationUnitValue = saleDb.TransportationCompanyValue,
+            //                TripType = saleDb.TripType
+
+            //            } into CallData
+
+            //            group CallData by new { CallData.TripType, CallData.TerminalId }
+
+            //            into queryGroup
+            //                   select new
+            //                   {
+            //                       SaleCount = queryGroup.Count(),
+            //                       TripType = queryGroup.Key.TripType,
+            //                       TerminalId = queryGroup.Key.TerminalId,
+            //                       DriverValue = queryGroup.Sum(c => c.DriverValue),
+            //                       SumTotal = queryGroup.Sum(c => c.SumTotal),
+            //                       TotalFare = queryGroup.Sum(c => c.TotalFare),
+            //                       TransportationCompanyValue = queryGroup.Sum(c => c.TransportationCompanyValue),
+            //                       TransportationUnitValue = queryGroup.Sum(c => c.TransportationUnitValue)
+
+            //                   }
+            //            ).ToListAsync();
+
+            //var model = query.Select(c => new SaleViewModel
+            //{
+            //    TerminalCaption = "Terminal"+ c.TerminalId,
+            //    DriverValue = c.DriverValue,
+            //    SaleCount = c.SaleCount,
+            //    SumTotal = c.SumTotal,
+            //    TerminalId = c.TerminalId,
+            //    TotalFare = c.TotalFare,
+            //    TransportationCompanyValue = c.TransportationCompanyValue,
+            //    TransportationUnitValue = c.TransportationCompanyValue,
+            //    TripType = c.TripType
+
+            //}).ToList();
+
+
+
+
+
+
+
             var isAjax = Request.Headers["X-Requested-With"] == "XMLHttpRequest";
             if (isAjax && TypeOfNews == "MostViewedNews")
                 return PartialView("_MostViewedNews", await _uw.NewsRepository.MostViewedNews(0, 3, duration));
@@ -46,6 +143,7 @@ namespace NewsWebsite.Controllers
                 var homePageViewModel = new HomePageViewModel(news, mostViewedNews, mostTalkNews, mostPopulerNews, internalNews, foreignNews, videos, countNewsPublished);
                 return View(homePageViewModel);
             }
+
 
         }
 
@@ -84,7 +182,7 @@ namespace NewsWebsite.Controllers
             return PartialView("_NewsPaginate", new NewsPaginateViewModel(countNewsPublished, news));
         }
 
-      
+
         public async Task<IActionResult> NewsInSearch(string search)
         {
             var news = await _uw.NewsRepository.GetNewsBySearch(search);
