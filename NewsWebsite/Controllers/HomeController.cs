@@ -44,9 +44,9 @@ namespace NewsWebsite.Controllers
             //var sales = new List<Sale>();
 
 
-            //for (int i = 0; i < 200000; i++)
+            //for (int i = 0; i < 100; i++)
             //{
-            //    sales.Add(new Sale
+            //    var saleNew = new Sale
             //    {
             //        DriverValue = rnd.Next(0, 8),
             //        SumTotal = rnd.Next(0, 8),
@@ -56,11 +56,35 @@ namespace NewsWebsite.Controllers
 
             //        TripType = (TripType)rnd.Next(0, 2),
             //        TerminalCaption = "Terminal" + i,
-            //        TerminalId = 4
+            //        TerminalId = 1,
 
-            //    });
+
+            //    };
+
+            //    await _uw._Context.Sales.AddAsync(saleNew);
+            //    await _uw._Context.SaveChangesAsync();
+
+            //    var setlRandNum = rnd.Next(1, 3);
+
+            //    var setlList = new List<SettlementDetail>();
+
+            //    for (var j = 0; j < setlRandNum; j++)
+            //    {
+
+            //        setlList.Add(new SettlementDetail
+            //        {
+            //            SaleId = saleNew.Id,
+            //            BenefisheryType = (BenefisheryType)rnd.Next(0, 2),
+            //            Value = rnd.Next(5)
+            //        });
+            //    }
+
+            //    await _uw._Context.SettlementDetails.AddRangeAsync(setlList);
+            //    await _uw._Context.SaveChangesAsync();
 
             //}
+
+
             //Start = DateTime.Now;
             //using (var transaction = _uw._Context.Database.BeginTransaction())
             //{
@@ -68,43 +92,69 @@ namespace NewsWebsite.Controllers
 
             //    transaction.Commit();
             //}
-            //TimeSpan = DateTime.Now - Start; 
+            //TimeSpan = DateTime.Now - Start;
+
+            //var sale = _uw._Context.Sales.AsNoTracking();
+            //var settlementDetails = _uw._Context.SettlementDetails;
+
+            //var sumDrivervalue = await _uw._Context.Sales.AsNoTracking()
+            //    .Include(c => c.settlementDetails)
+            //    .Select(c => new
+            //    {
+            //        //value = c.settlementDetails.Sum(c=> c.Value)
+
+            //        //value = c.settlementDetails.Where(x => x.BenefisheryType == BenefisheryType.Driver).Sum(c=> c.Value)
+
+            //        value = c.settlementDetails.Where(x => x.BenefisheryType == BenefisheryType.Driver)
+            //        .FirstOrDefault() == null ? 0 : c.settlementDetails.Where(x => x.BenefisheryType == BenefisheryType.Driver)
+            //        .FirstOrDefault().Value
+
+            //    }).ToListAsync();
+
+            //var gfg = sumDrivervalue.Sum(c => c.value);
+
+            //var ts = await (from saleDb in sale
+
+            //                join Setl in settlementDetails
+            //                on saleDb.Id equals Setl.SaleId into bc
+            //                from bct in bc.DefaultIfEmpty()
+
+            //                select new
+            //                {
+
+            //                    DriverValue = (bct.BenefisheryType == BenefisheryType.Driver ? bct.Value : 0),
+
+            //                    CompanyValue = (bct.BenefisheryType == BenefisheryType.Company ? bct.Value : 0),
+            //                    UnitValue = (bct.BenefisheryType == BenefisheryType.Unit ? bct.Value : 0),
+            //                    TripType = saleDb.TripType,
+            //                    TerminalId = saleDb.TerminalId,
+            //                }
 
 
-            //var query = await (from saleDb in _uw._Context.Sales.AsNoTracking()
-            //            select new
-            //            {
-            //                TerminalCaption = saleDb.TerminalCaption,
-            //                DriverValue = saleDb.DriverValue,
-            //                SumTotal = saleDb.SumTotal,
-            //                TerminalId = saleDb.TerminalId,
-            //                TotalFare = saleDb.TotalFare,
-            //                TransportationCompanyValue = saleDb.TransportationCompanyValue,
-            //                TransportationUnitValue = saleDb.TransportationCompanyValue,
-            //                TripType = saleDb.TripType
+            //                into CallData
 
-            //            } into CallData
+            //                group CallData by new { CallData.TripType, CallData.TerminalId }
 
-            //            group CallData by new { CallData.TripType, CallData.TerminalId }
+            //               into queryGroup
+            //                select new SaleViewModel
+            //                {
 
-            //            into queryGroup
-            //                   select new
-            //                   {
-            //                       SaleCount = queryGroup.Count(),
-            //                       TripType = queryGroup.Key.TripType,
-            //                       TerminalId = queryGroup.Key.TerminalId,
-            //                       DriverValue = queryGroup.Sum(c => c.DriverValue),
-            //                       SumTotal = queryGroup.Sum(c => c.SumTotal),
-            //                       TotalFare = queryGroup.Sum(c => c.TotalFare),
-            //                       TransportationCompanyValue = queryGroup.Sum(c => c.TransportationCompanyValue),
-            //                       TransportationUnitValue = queryGroup.Sum(c => c.TransportationUnitValue)
+            //                    SaleCount = queryGroup.Count(),
+            //                    TripType = queryGroup.Key.TripType,
+            //                    TerminalId = queryGroup.Key.TerminalId,
+            //                    DriverValue = queryGroup.Sum(c => c.DriverValue),
+            //                    TransportationUnitValue = queryGroup.Sum(c => c.UnitValue),
+            //                    TransportationCompanyValue = queryGroup.Sum(c => c.CompanyValue),
 
-            //                   }
-            //            ).ToListAsync();
+            //                }
+            //        ).ToListAsync();
+
+
+
 
             //var model = query.Select(c => new SaleViewModel
             //{
-            //    TerminalCaption = "Terminal"+ c.TerminalId,
+            //    TerminalCaption = "Terminal" + c.TerminalId,
             //    DriverValue = c.DriverValue,
             //    SaleCount = c.SaleCount,
             //    SumTotal = c.SumTotal,
@@ -115,8 +165,6 @@ namespace NewsWebsite.Controllers
             //    TripType = c.TripType
 
             //}).ToList();
-
-
 
 
 

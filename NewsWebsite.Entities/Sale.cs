@@ -20,6 +20,9 @@ namespace NewsWebsite.Entities
         public string TerminalCaption { get; set; }
         public TripType TripType { get; set; }
         public int TerminalId { get; set; }
+
+        public ICollection<SettlementDetail> settlementDetails { get; set; }
+
     }
 
     public enum TripType
