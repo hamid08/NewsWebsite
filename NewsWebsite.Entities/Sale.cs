@@ -13,15 +13,26 @@ namespace NewsWebsite.Entities
         public int Id { get; set; }
 
         public long TotalFare { get; set; }
-        public long DriverValue { get; set; }
-        public long TransportationCompanyValue { get; set; }
-        public long TransportationUnitValue { get; set; }
-        public long SumTotal { get; set; }
-        public string TerminalCaption { get; set; }
+     
         public TripType TripType { get; set; }
-        public int TerminalId { get; set; }
+        public int TransportTerminalId { get; set; }
+
+        public TransportTerminal TransportTerminal { get; set; }
+
+        public TripStatus TripStatus { get; set; }
+
+        public DateTime? EndMissionDate { get; set; }
+
 
         public ICollection<SettlementDetail> settlementDetails { get; set; }
+
+    }
+
+    public enum TripStatus
+    {
+       EndMission,
+       Started,
+       InMission
 
     }
 

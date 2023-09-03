@@ -47,6 +47,7 @@ namespace NewsWebsite.Data
         public virtual DbSet<Video> Videos { get; set; }
         public virtual DbSet<UserCategory> UserCategories { get; set; }
         public virtual DbSet<Sale> Sales { get; set; }
+        public virtual DbSet<TransportTerminal> TransportTerminals { get; set; }
         public virtual DbSet<SettlementDetail> SettlementDetails { get; set; }
     }
 }

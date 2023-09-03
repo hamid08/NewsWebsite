@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NewsWebsite.Data;
 
 namespace NewsWebsite.Data.Migrations
 {
     [DbContext(typeof(NewsDBContext))]
-    partial class NewsDBContextModelSnapshot : ModelSnapshot
+    [Migration("20230903190526_editSaleModel")]
+    partial class editSaleModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -263,10 +265,13 @@ namespace NewsWebsite.Data.Migrations
                     b.Property<DateTime?>("EndMissionDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("TerminalId")
+                        .HasColumnType("int");
+
                     b.Property<long>("TotalFare")
                         .HasColumnType("bigint");
 
-                    b.Property<int>("TransportTerminalId")
+                    b.Property<int?>("TransportTerminalId")
                         .HasColumnType("int");
 
                     b.Property<int>("TripStatus")
@@ -716,9 +721,7 @@ namespace NewsWebsite.Data.Migrations
                 {
                     b.HasOne("NewsWebsite.Entities.TransportTerminal", "TransportTerminal")
                         .WithMany("Sales")
-                        .HasForeignKey("TransportTerminalId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("TransportTerminalId");
 
                     b.Navigation("TransportTerminal");
                 });

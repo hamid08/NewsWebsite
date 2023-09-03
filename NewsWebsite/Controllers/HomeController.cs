@@ -43,20 +43,29 @@ namespace NewsWebsite.Controllers
 
             //var sales = new List<Sale>();
 
-
-            //for (int i = 0; i < 100; i++)
+            //for (int i = 0; i < 4; i++)
             //{
+            //    var terminal = new TransportTerminal()
+            //    {
+            //        Caption = "ترمینال" + i
+            //    };
+
+            //    await _uw._Context.TransportTerminals.AddAsync(terminal);
+            //    await _uw._Context.SaveChangesAsync();
+            //}
+
+
+
+            //for (int i = 0; i < 20; i++)
+            //{
+
             //    var saleNew = new Sale
             //    {
-            //        DriverValue = rnd.Next(0, 8),
-            //        SumTotal = rnd.Next(0, 8),
-            //        TotalFare = rnd.Next(0, 8),
-            //        TransportationCompanyValue = rnd.Next(0, 8),
-            //        TransportationUnitValue = rnd.Next(0, 8),
-
-            //        TripType = (TripType)rnd.Next(0, 2),
-            //        TerminalCaption = "Terminal" + i,
-            //        TerminalId = 1,
+            //        EndMissionDate = DateTime.Now.AddDays(i),
+            //        TripStatus = (TripStatus)rnd.Next(0, 3),
+            //        TransportTerminalId = rnd.Next(1, 4),
+            //        TripType = (TripType)rnd.Next(0, 3),
+            //        TotalFare = rnd.Next(0, 18200),
 
 
             //    };
@@ -64,7 +73,7 @@ namespace NewsWebsite.Controllers
             //    await _uw._Context.Sales.AddAsync(saleNew);
             //    await _uw._Context.SaveChangesAsync();
 
-            //    var setlRandNum = rnd.Next(1, 3);
+            //    var setlRandNum = rnd.Next(1, 5);
 
             //    var setlList = new List<SettlementDetail>();
 
@@ -74,98 +83,301 @@ namespace NewsWebsite.Controllers
             //        setlList.Add(new SettlementDetail
             //        {
             //            SaleId = saleNew.Id,
-            //            BenefisheryType = (BenefisheryType)rnd.Next(0, 2),
-            //            Value = rnd.Next(5)
+            //            BenefisheryType = (BenefisheryType)rnd.Next(0, 3),
+            //            Value = rnd.Next(1, 11500),
+
             //        });
             //    }
 
             //    await _uw._Context.SettlementDetails.AddRangeAsync(setlList);
             //    await _uw._Context.SaveChangesAsync();
-
-            //}
-
-
-            //Start = DateTime.Now;
-            //using (var transaction = _uw._Context.Database.BeginTransaction())
-            //{
-            //    await _uw._Context.BulkInsertAsync(sales);
-
-            //    transaction.Commit();
-            //}
-            //TimeSpan = DateTime.Now - Start;
-
-            //var sale = _uw._Context.Sales.AsNoTracking();
-            //var settlementDetails = _uw._Context.SettlementDetails;
-
-            //var sumDrivervalue = await _uw._Context.Sales.AsNoTracking()
-            //    .Include(c => c.settlementDetails)
-            //    .Select(c => new
-            //    {
-            //        //value = c.settlementDetails.Sum(c=> c.Value)
-
-            //        //value = c.settlementDetails.Where(x => x.BenefisheryType == BenefisheryType.Driver).Sum(c=> c.Value)
-
-            //        value = c.settlementDetails.Where(x => x.BenefisheryType == BenefisheryType.Driver)
-            //        .FirstOrDefault() == null ? 0 : c.settlementDetails.Where(x => x.BenefisheryType == BenefisheryType.Driver)
-            //        .FirstOrDefault().Value
-
-            //    }).ToListAsync();
-
-            //var gfg = sumDrivervalue.Sum(c => c.value);
-
-            //var ts = await (from saleDb in sale
-
-            //                join Setl in settlementDetails
-            //                on saleDb.Id equals Setl.SaleId into bc
-            //                from bct in bc.DefaultIfEmpty()
-
-            //                select new
-            //                {
-
-            //                    DriverValue = (bct.BenefisheryType == BenefisheryType.Driver ? bct.Value : 0),
-
-            //                    CompanyValue = (bct.BenefisheryType == BenefisheryType.Company ? bct.Value : 0),
-            //                    UnitValue = (bct.BenefisheryType == BenefisheryType.Unit ? bct.Value : 0),
-            //                    TripType = saleDb.TripType,
-            //                    TerminalId = saleDb.TerminalId,
-            //                }
+            //};
 
 
-            //                into CallData
 
-            //                group CallData by new { CallData.TripType, CallData.TerminalId }
+            int? terminalFilter = null;
 
-            //               into queryGroup
-            //                select new SaleViewModel
-            //                {
-
-            //                    SaleCount = queryGroup.Count(),
-            //                    TripType = queryGroup.Key.TripType,
-            //                    TerminalId = queryGroup.Key.TerminalId,
-            //                    DriverValue = queryGroup.Sum(c => c.DriverValue),
-            //                    TransportationUnitValue = queryGroup.Sum(c => c.UnitValue),
-            //                    TransportationCompanyValue = queryGroup.Sum(c => c.CompanyValue),
-
-            //                }
-            //        ).ToListAsync();
+            var sale = _uw._Context.Sales.AsNoTracking();
+            var settlementDetails = _uw._Context.SettlementDetails;
 
 
 
 
-            //var model = query.Select(c => new SaleViewModel
-            //{
-            //    TerminalCaption = "Terminal" + c.TerminalId,
-            //    DriverValue = c.DriverValue,
-            //    SaleCount = c.SaleCount,
-            //    SumTotal = c.SumTotal,
-            //    TerminalId = c.TerminalId,
-            //    TotalFare = c.TotalFare,
-            //    TransportationCompanyValue = c.TransportationCompanyValue,
-            //    TransportationUnitValue = c.TransportationCompanyValue,
-            //    TripType = c.TripType
+            //var saleData_Db = await (from Setl in settlementDetails
 
-            //}).ToList();
+            //                         group Setl by Setl.SaleId into SetlGroup
 
+            //                         select new
+            //                         {
+            //                             DriverValue = SetlGroup
+            //                            .Where(c => c.BenefisheryType == BenefisheryType.Driver).Sum(c => c.Value),
+
+            //                             UnitValue = SetlGroup
+            //                            .Where(c => c.BenefisheryType == BenefisheryType.Unit).Sum(c => c.Value),
+
+            //                             CompanyValue = SetlGroup
+            //                            .Where(c => c.BenefisheryType == BenefisheryType.Company).Sum(c => c.Value),
+
+            //                             TotalValue = SetlGroup.Sum(c => c.Value),
+
+            //                             SaleId = SetlGroup.Key
+
+            //                         } into SetlGroupSelect
+
+            //                         join SaleDb in sale
+            //                       on SetlGroupSelect.SaleId equals SaleDb.Id into bc
+            //                         from bct in bc.DefaultIfEmpty()
+
+            //                         where (bct.TripStatus == TripStatus.EndMission)
+            //                         where (terminalFilter != null && terminalFilter.Value > 0 ?
+            //                         bct.TransportTerminalId == terminalFilter.Value : true)
+
+            //                         orderby bct.Id descending
+
+            //                         select new
+            //                         {
+            //                             TotalFare = bct.TotalFare,
+            //                             DriverValue = SetlGroupSelect.DriverValue,
+            //                             UnitValue = SetlGroupSelect.UnitValue,
+            //                             CompanyValue = SetlGroupSelect.CompanyValue,
+            //                             TotalValue = SetlGroupSelect.TotalValue,
+
+            //                             bct.EndMissionDate
+
+            //                         } into SaleSelect
+
+            //                         group SaleSelect by new
+            //                         {
+            //                             SaleSelect.EndMissionDate.Value.Date
+
+            //                         } into SaleSelectGroup
+
+            //                         select new
+            //                         {
+            //                             Date = SaleSelectGroup.Key.Date,
+            //                             TotalFare = SaleSelectGroup.Sum(c => c.TotalFare),
+            //                             DriverValue = SaleSelectGroup.Sum(c => c.DriverValue),
+            //                             UnitValue = SaleSelectGroup.Sum(c => c.UnitValue),
+            //                             CompanyValue = SaleSelectGroup.Sum(c => c.CompanyValue),
+            //                             TotalValue = SaleSelectGroup.Sum(c => c.TotalValue),
+            //                             SaleCount = SaleSelectGroup.Count()
+            //                         }
+
+            //                 ).ToListAsync();
+
+
+            //var saleData_Db = await (from Setl in settlementDetails
+
+            //                         group Setl by Setl.SaleId into SetlGroup
+
+            //                         select new
+            //                         {
+            //                             DriverValue = SetlGroup
+            //                            .Where(c => c.BenefisheryType == BenefisheryType.Driver).Sum(c => c.Value),
+
+            //                             UnitValue = SetlGroup
+            //                            .Where(c => c.BenefisheryType == BenefisheryType.Unit).Sum(c => c.Value),
+
+            //                             CompanyValue = SetlGroup
+            //                            .Where(c => c.BenefisheryType == BenefisheryType.Company).Sum(c => c.Value),
+
+            //                             TotalValue = SetlGroup.Sum(c => c.Value),
+
+            //                             SaleId = SetlGroup.Key
+
+            //                         } into SetlGroupSelect
+
+            //                         join SaleDb in sale
+            //                       on SetlGroupSelect.SaleId equals SaleDb.Id into bc
+            //                         from bct in bc.DefaultIfEmpty()
+
+            //                         where (bct.TripStatus == TripStatus.EndMission)
+            //                         where (terminalFilter != null && terminalFilter.Value > 0 ?
+            //                         bct.TransportTerminalId == terminalFilter.Value : true)
+
+            //                         orderby bct.Id descending
+
+            //                         select new
+            //                         {
+            //                             TotalFare = bct.TotalFare,
+            //                             DriverValue = SetlGroupSelect.DriverValue,
+            //                             UnitValue = SetlGroupSelect.UnitValue,
+            //                             CompanyValue = SetlGroupSelect.CompanyValue,
+            //                             TotalValue = SetlGroupSelect.TotalValue,
+
+            //                             TripType = bct.TripType,
+            //                             TerminalId = bct.TransportTerminalId,
+            //                             TerminalCaption = bct.TransportTerminal.Caption,
+
+            //                         } into SaleSelect
+
+            //                         group SaleSelect by new
+            //                         {
+            //                             SaleSelect.TripType,
+            //                             SaleSelect.TerminalId,
+            //                             SaleSelect.TerminalCaption
+
+            //                         } into SaleSelectGroup
+
+            //                         select new
+            //                         {
+            //                             TripType = SaleSelectGroup.Key.TripType,
+            //                             TerminalId = SaleSelectGroup.Key.TerminalId,
+            //                             TransportTerminalCaption = SaleSelectGroup.Key.TerminalCaption,
+            //                             TotalFare = SaleSelectGroup.Sum(c => c.TotalFare),
+            //                             DriverValue = SaleSelectGroup.Sum(c => c.DriverValue),
+            //                             UnitValue = SaleSelectGroup.Sum(c => c.UnitValue),
+            //                             CompanyValue = SaleSelectGroup.Sum(c => c.CompanyValue),
+            //                             TotalValue = SaleSelectGroup.Sum(c => c.TotalValue),
+            //                             SaleCount = SaleSelectGroup.Count()
+            //                         }
+
+            //                  ).ToListAsync();
+
+
+            //var saleData_Db = await (from Setl in settlementDetails
+
+            //                         group Setl by Setl.SaleId into SetlGroup
+
+            //                         select new
+            //                         {
+            //                             DriverValue = SetlGroup
+            //                            .Where(c => c.BenefisheryType == BenefisheryType.Driver).Sum(c => c.Value),
+
+            //                             UnitValue = SetlGroup
+            //                            .Where(c => c.BenefisheryType == BenefisheryType.Unit).Sum(c => c.Value),
+
+            //                             CompanyValue = SetlGroup
+            //                            .Where(c => c.BenefisheryType == BenefisheryType.Company).Sum(c => c.Value),
+
+            //                             TotalValue = SetlGroup.Sum(c => c.Value),
+
+            //                             SaleId = SetlGroup.Key
+
+            //                         } into SetlGroupSelect
+
+            //                         join SaleDb in sale
+            //                         on SetlGroupSelect.SaleId equals SaleDb.Id into bc
+            //                         from bct in bc.DefaultIfEmpty()
+
+            //                         where (bct.TripStatus == TripStatus.EndMission)
+            //                         where (terminalFilter != null && terminalFilter.Value > 0 ?
+            //                         bct.TransportTerminalId == terminalFilter.Value : true)
+
+            //                         orderby bct.Id descending
+
+            //                         select new
+            //                         {
+            //                             TotalFare = bct.TotalFare,
+            //                             DriverValue = SetlGroupSelect.DriverValue,
+            //                             UnitValue = SetlGroupSelect.UnitValue,
+            //                             CompanyValue = SetlGroupSelect.CompanyValue,
+            //                             TotalValue = SetlGroupSelect.TotalValue,
+
+            //                             bct.TransportTerminalId,
+            //                             TerminalCaption = bct.TransportTerminal.Caption
+
+            //                         } into SaleSelect
+
+            //                         group SaleSelect by new
+            //                         {
+            //                             SaleSelect.TransportTerminalId,
+            //                             SaleSelect.TerminalCaption
+
+            //                         } into SaleSelectGroup
+
+            //                         select new
+            //                         {
+            //                             TerminalCaption = SaleSelectGroup.Key.TerminalCaption,
+            //                             TransportTerminalId = SaleSelectGroup.Key.TransportTerminalId,
+            //                             TotalFare = SaleSelectGroup.Sum(c => c.TotalFare),
+            //                             DriverValue = SaleSelectGroup.Sum(c => c.DriverValue),
+            //                             UnitValue = SaleSelectGroup.Sum(c => c.UnitValue),
+            //                             CompanyValue = SaleSelectGroup.Sum(c => c.CompanyValue),
+            //                             TotalValue = SaleSelectGroup.Sum(c => c.TotalValue),
+            //                             SaleCount = SaleSelectGroup.Count()
+            //                         }
+
+            //                ).ToListAsync();
+
+
+            //var saleData_Db = await (from Setl in settlementDetails
+
+            //                         group Setl by Setl.SaleId into SetlGroup
+
+            //                         select new
+            //                         {
+            //                             DriverValue = SetlGroup
+            //                            .Where(c => c.BenefisheryType == BenefisheryType.Driver).Sum(c => c.Value),
+
+            //                             UnitValue = SetlGroup
+            //                            .Where(c => c.BenefisheryType == BenefisheryType.Unit).Sum(c => c.Value),
+
+            //                             CompanyValue = SetlGroup
+            //                            .Where(c => c.BenefisheryType == BenefisheryType.Company).Sum(c => c.Value),
+
+            //                             TotalValue = SetlGroup.Sum(c => c.Value),
+
+            //                             SaleId = SetlGroup.Key
+
+            //                         } into SetlGroupSelect
+
+            //                         join SaleDb in sale
+            //                         on SetlGroupSelect.SaleId equals SaleDb.Id into bc
+            //                         from bct in bc.DefaultIfEmpty()
+
+
+            //                         where (bct.TripStatus == TripStatus.EndMission)
+            //                         where (terminalFilter != null && terminalFilter.Value > 0 ?
+            //                         bct.TransportTerminalId == terminalFilter.Value : true)
+
+            //                         orderby bct.Id descending
+
+            //                         select new
+            //                         {
+            //                             TotalFare = bct.TotalFare,
+            //                             DriverValue = SetlGroupSelect.DriverValue,
+            //                             UnitValue = SetlGroupSelect.UnitValue,
+            //                             CompanyValue = SetlGroupSelect.CompanyValue,
+            //                             TotalValue = SetlGroupSelect.TotalValue,
+
+            //                             bct.TransportTerminalId,
+            //                             TerminalCaption = bct.TransportTerminal.Caption,
+            //                             bct.EndMissionDate
+
+            //                         } into SaleSelect
+
+            //                         group SaleSelect by new
+            //                         {
+            //                             SaleSelect.TransportTerminalId,
+            //                             SaleSelect.TerminalCaption,
+            //                             SaleSelect.EndMissionDate.Value.Date
+
+            //                         } into SaleSelectGroup
+
+            //                         select new
+            //                         {
+            //                             TerminalCaption = SaleSelectGroup.Key.TerminalCaption,
+            //                             TransportTerminalId = SaleSelectGroup.Key.TransportTerminalId,
+            //                             Date = SaleSelectGroup.Key.Date,
+            //                             TotalFare = SaleSelectGroup.Sum(c => c.TotalFare),
+            //                             DriverValue = SaleSelectGroup.Sum(c => c.DriverValue),
+            //                             UnitValue = SaleSelectGroup.Sum(c => c.UnitValue),
+            //                             CompanyValue = SaleSelectGroup.Sum(c => c.CompanyValue),
+            //                             TotalValue = SaleSelectGroup.Sum(c => c.TotalValue),
+            //                             SaleCount = SaleSelectGroup.Count()
+            //                         }
+
+            //               ).ToListAsync();
+
+
+
+            //var TotalFare = saleData_Db.Sum(c => c.TotalFare);
+            //var DriverValue = saleData_Db.Sum(c => c.DriverValue);
+            //var UnitValue = saleData_Db.Sum(c => c.UnitValue);
+            //var CompanyValue = saleData_Db.Sum(c => c.CompanyValue);
+            //var TotalValue = saleData_Db.Sum(c => c.TotalValue);
+            //var SaleCount = saleData_Db.Sum(c => c.SaleCount);
 
 
 
