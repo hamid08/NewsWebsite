@@ -19,7 +19,7 @@ namespace NewsWebsite.ViewComponents
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            var newsTitles = await _uw._Context.News.Where(n => n.IsPublish == true && n.PublishDateTime <= DateTime.Now).OrderByDescending(n => n.PublishDateTime).Select(n => new NewsViewModel {Title=n.Title,Url=n.Url,NewsId=n.NewsId}).Take(10).ToListAsync();
+            var newsTitles = await _uw._Context.News.Where(n => n.IsConfirm && n.IsPublish == true && n.PublishDateTime <= DateTime.Now).OrderByDescending(n => n.PublishDateTime).Select(n => new NewsViewModel {Title=n.Title,Url=n.Url,NewsId=n.NewsId}).Take(10).ToListAsync();
             return View(newsTitles);
         }
     }

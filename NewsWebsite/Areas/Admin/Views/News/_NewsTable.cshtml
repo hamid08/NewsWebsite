@@ -1,17 +1,24 @@
-﻿
+﻿@using NewsWebsite.Services.Contracts
+@inject ISecurityTrimmingService securityTrimmingService
+
 <style>
     .fixed-table-header {
     margin-right: 0px !important;
 }
 </style>
     <div id="toolbar">
+    @if (securityTrimmingService.CanUserAccess(User, "Admin", "News", "CreateOrUpdate") == true)
+    {
         <a  class="btn btn-success text-white" asp-action="CreateOrUpdate">
             <i class="fa fa-plus"></i> | افزودن خبر جدید
         </a>
-
-        <button type="button" class="btn btn-danger" data-toggle="ajax-modal" data-url="@Url.Action("DeleteGroup","Category")">
+    }
+    @if (securityTrimmingService.CanUserAccess(User, "Admin", "News", "DeleteGroup") == true)
+    {
+        <button type="button" class="btn btn-danger" data-toggle="ajax-modal" data-url="@Url.Action("DeleteGroup","News")">
             <i class="fa fa-trash"></i> | حذف گروهی
         </button>
+         }
     </div>
 <table id="table"
        data-toolbar="#toolbar"
@@ -82,18 +89,42 @@
       ].join('')
     }
 
+    function isConfirmFormatter(value, row, index) {
+        var spanClass = "badge badge-success";
+        var IsConfirm = "تایید شده";
+        if (!row.isConfirm) {
+            IsConfirm = "تایید نشده";
+            spanClass = "badge badge-danger";
+        }
+        return [
+            '<span class="' + spanClass + '">' + IsConfirm + '</span>'
+        ].join('')
+    }
 
      function operateFormatter(value, row, index) {
         
-        return [
-            '<a class="text-success" href="/Admin/News/CreateOrUpdate?newsId=' + row.newsId + '" title="ویرایش">',
-            '<i class="fa fa-edit"></i>',
-            '</a >',
+         var access = "";
 
-            '<button type="button" class="btn-link text-danger" data-toggle="ajax-modal" data-url=@Url.Action("Delete", "News")/?newsId=' + row.newsId + ' title="حذف">',
-            '<i class="fa fa-trash"></i>',
-            '</button >'
-        ].join('')
+        if ('@securityTrimmingService.CanUserAccess(User,"Admin", "News", "ConfirmOrInconfirm")' == 'True') {
+
+            access = access + '<button type="button" class="btn-link text-success" data-toggle="ajax-modal" data-url=@Url.Action("ConfirmOrInconfirm", "News")?newsId=' + row.newsId + '  title="تایید / عدم تایید"><i class="fa fa-check"></i></button>';
+
+        }
+
+         if ('@securityTrimmingService.CanUserAccess(User,"Admin", "News", "CreateOrUpdate")' == 'True') {
+            access = access +
+                '<a class="text-success" href=@Url.Action("CreateOrUpdate","News")?newsId=' +
+                row.newsId +
+                ' title="ویرایش">' +
+                '<i class="fa fa-edit"></i></a>';
+         }
+
+        if ('@securityTrimmingService.CanUserAccess(User,"Admin", "News", "Delete")' == 'True') {
+            access = access + '<button type="button" class="btn-link text-danger" data-toggle="ajax-modal" data-url=@Url.Action("Delete", "News")/?newsId=' + row.newsId + ' title="حذف"><i class="fa fa-trash"></i></button>';
+        }
+        
+
+        return access;
     }
 
       function likeFormatter(value, row, index) {
@@ -102,6 +133,8 @@
             row.numberOfLike, '<i class="fa fa-thumbs-up mr-1"></i>',
             '</a >'
         ].join('')
+
+
     }
 
      function dislikeFormatter(value, row, index) {
@@ -156,7 +189,7 @@
                         footerFormatter: totalTextFormatter
                     }, {
                         title: 'جزئیات اطلاعات اخبار',
-                        colspan: 9,
+                        colspan: 10,
                         align: 'center'
                     }],
                     [{
@@ -197,7 +230,16 @@
                         title: 'وضعیت',
                         align: 'center',
                         formatter: isPublishFormatter
-                    }, {
+                    },
+                    {
+                    field: 'isConfirm',
+                        title: 'وضعیت تایید',
+                        align: 'center',
+                        sortable: true,
+                        formatter: isConfirmFormatter
+                    },
+                    
+                    {
                         field: 'operate',
                         title: 'عملیات',
                         align: 'center',

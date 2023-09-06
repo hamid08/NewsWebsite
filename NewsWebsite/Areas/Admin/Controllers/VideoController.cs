@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using NewsWebsite.Common;
 using NewsWebsite.Common.Attributes;
 using NewsWebsite.Data.Contracts;
@@ -80,6 +81,7 @@ namespace NewsWebsite.Areas.Admin.Controllers
             else
                 videos = _uw.VideoRepository.GetPaginateVideos(offset, limit, item => "", item => item.PersianPublishDateTime, search);
 
+
             if (search != "")
                 total = videos.Count();
 
@@ -87,7 +89,9 @@ namespace NewsWebsite.Areas.Admin.Controllers
         }
 
 
-        [HttpGet,AjaxOnly()]
+        [AjaxOnly()]
+        [HttpGet, DisplayName("درج و ویرایش")]
+        [Authorize(Policy = ConstantPolicies.DynamicPermission)]
         public async Task<IActionResult> RenderVideo(string videoId)
         {
             var videoViewModel = new VideoViewModel();
@@ -167,6 +171,7 @@ namespace NewsWebsite.Areas.Admin.Controllers
                     var newVideo = _mapper.Map<Video>(viewModel);
                     newVideo.Url = videoFileName;
 
+                    newVideo.IsConfirm = false;
 
                     await _uw.BaseRepository<Video>().CreateAsync(newVideo);
                     await _uw.Commit();
@@ -178,7 +183,9 @@ namespace NewsWebsite.Areas.Admin.Controllers
         }
 
 
-        [HttpGet, AjaxOnly()]
+        [AjaxOnly()]
+        [HttpGet, DisplayName("حذف")]
+        [Authorize(Policy = ConstantPolicies.DynamicPermission)]
         public async Task<IActionResult> Delete(string videoId)
         {
             if (!videoId.HasValue())
@@ -196,6 +203,7 @@ namespace NewsWebsite.Areas.Admin.Controllers
 
 
         [HttpPost, ActionName("Delete"), AjaxOnly()]
+       
         public async Task<IActionResult> DeleteConfirmed(Video model)
         {
             if (model.VideoId == null)
@@ -222,6 +230,8 @@ namespace NewsWebsite.Areas.Admin.Controllers
 
 
         [HttpPost, ActionName("DeleteGroup")]
+        [DisplayName("حذف گروهی")]
+        [Authorize(Policy = ConstantPolicies.DynamicPermission)]
         public async Task<IActionResult> DeleteGroupConfirmed(string[] btSelectItem)
         {
             if (btSelectItem.Count() == 0)
@@ -242,5 +252,52 @@ namespace NewsWebsite.Areas.Admin.Controllers
 
             return PartialView("_DeleteGroup");
         }
+
+
+        [HttpGet, DisplayName("تایید ویدیو")]
+        [Authorize(Policy = ConstantPolicies.DynamicPermission)]
+        public async Task<IActionResult> ConfirmOrInconfirm(string videoId)
+        {
+            if (!videoId.HasValue())
+                ModelState.AddModelError(string.Empty, VideoNotFound);
+            else
+            {
+                var video = await _uw.BaseRepository<Video>().FindByIdAsync(videoId);
+                if (video == null)
+                    ModelState.AddModelError(string.Empty, VideoNotFound);
+                else
+                    return PartialView("_ConfirmOrInconfirm", video);
+            }
+            return PartialView("_ConfirmOrInconfirm");
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> ConfirmOrInconfirm(Video model)
+        {
+            if (model.VideoId == null)
+                ModelState.AddModelError(string.Empty, VideoNotFound);
+            else
+            {
+                var video = await _uw.BaseRepository<Video>().FindByIdAsync(model.VideoId);
+                if (video == null)
+                    ModelState.AddModelError(string.Empty, VideoNotFound);
+                else
+                {
+                    if (video.IsConfirm)
+                        video.IsConfirm = false;
+                    else
+                        video.IsConfirm = true;
+
+                    _uw.BaseRepository<Video>().Update(video);
+                    await _uw.Commit();
+                    TempData["notification"] = OperationSuccess;
+                    return PartialView("_ConfirmOrInconfirm", video);
+                }
+            }
+            return PartialView("_ConfirmOrInconfirm");
+        }
+
+
     }
 }

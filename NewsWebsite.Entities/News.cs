@@ -19,6 +19,7 @@ namespace NewsWebsite.Entities
         public bool IsPublish { get; set; }
         public bool IsInternal { get; set; }
         public string Abstract { get; set; }
+        public bool IsConfirm { get; set; }
 
         public virtual User User { get; set; }
         public virtual ICollection<Comment> Comments { get; set; }

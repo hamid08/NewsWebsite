@@ -28,8 +28,9 @@
                         <div class="single-post-area mb-80 border">
                             <!-- Post Thumbnail -->
                             <div class="post-thumbnail">
+                                <a href="/News/@item.NewsId/@item.Url">
                                 <img src="~/newsImage/@item.ImageName" alt="@item.ImageName">
-
+                                </a>
                                 <!-- Video Duration -->
                                 <span class="video-duration">@DateTimeExtensions.ConvertMiladiToShamsi(item.PublishDateTime,"dd MMMM yyyy")</span>
                             </div>

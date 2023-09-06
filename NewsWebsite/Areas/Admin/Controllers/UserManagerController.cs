@@ -163,7 +163,7 @@ namespace NewsWebsite.Areas.Admin.Controllers
                     viewModel.Image = _userManager.CheckAvatarFileName(viewModel.ImageFile.FileName);
 
                 viewModel.Roles = new List<UserRole> { new UserRole { RoleId = (int)viewModel.RoleId } };
-                viewModel.BirthDate = DateTimeExtensions.ConvertShamsiToMiladi(viewModel.PersianBirthDate);
+                //viewModel.BirthDate = DateTimeExtensions.ConvertShamsiToMiladi(viewModel.PersianBirthDate);
                 if (viewModel.Id != null)
                 {
                     var user = await _userManager.FindByIdAsync(viewModel.Id.ToString());
@@ -209,8 +209,10 @@ namespace NewsWebsite.Areas.Admin.Controllers
                     .FindByConditionAsync(c => c.UserId == userId);
                 if (oldUserCategory.Any())
                     _uw.BaseRepository<UserCategory>().DeleteRange(oldUserCategory);
+                await _uw.Commit();
 
-                if (viewModel.CategoryIds.Any())
+
+                if (viewModel.CategoryIds != null && viewModel.CategoryIds.Any())
                 {
                     var userCategory = viewModel.CategoryIds.Select(c => new UserCategory
                     {

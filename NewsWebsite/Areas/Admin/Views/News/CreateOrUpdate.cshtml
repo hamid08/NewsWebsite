@@ -65,7 +65,7 @@
             @if (Model.NewsId.HasValue())
             {
                 <li>
-                    <a class="h4 mb-0 text-white d-lg-inline-block"  asp-action="CreateOrUpdate" asp-route-newsId="@Model.NewsId">ویرایش خبر </a>
+                    <a class="h4 mb-0 text-white d-lg-inline-block" asp-action="CreateOrUpdate" asp-route-newsId="@Model.NewsId">ویرایش خبر </a>
                 </li>
             }
             else
@@ -104,14 +104,14 @@
                 <div class="card-body">
                     @if (ViewBag.Alert != null)
                     {
-                    <div class="col-md-12">
-                        <div class="alert alert-success mb-4 alert-dismissable">
-                            @ViewBag.Alert
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
+                        <div class="col-md-12">
+                            <div class="alert alert-success mb-4 alert-dismissable">
+                                @ViewBag.Alert
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
                         </div>
-                    </div>
                     }
                     <div class="row">
                         <div class="col-md-9">
@@ -120,7 +120,7 @@
                                 <span asp-validation-for="Title" class="text-danger"></span>
                             </div>
                             <div class="form-group">
-                                <input asp-for="Abstract" class="form-control" placeholder="چکیده خبر" maxlength="100"/>
+                                <input asp-for="Abstract" class="form-control" placeholder="چکیده خبر" maxlength="100" />
                                 <span asp-validation-for="Abstract" class="text-danger"></span>
                             </div>
                             <div class="form-group row">
@@ -167,7 +167,7 @@
 
                                                 <input asp-for="PersianPublishTime" class="form-control">
                                             </div>
-                                           
+
                                             <span asp-validation-for="PersianPublishTime" class="text-danger"></span>
                                         </div>
                                     </div>
@@ -216,8 +216,13 @@
                                                     <input type="checkbox" name="CategoryIds" value="@item.id" /> @item.title
                                                 }
 
-                                                @{ Model.NewsCategoriesViewModel.Categories = item.subs;}
-                                                @await Html.PartialAsync("_SubCategories", Model.NewsCategoriesViewModel)
+                                                @if (item.subs != null && item.subs.Any())
+                                                {
+                                                    Model.NewsCategoriesViewModel.Categories = item.subs;
+                                                    @await Html.PartialAsync("_SubCategories", Model.NewsCategoriesViewModel)
+
+                                                }
+
 
                                             </li>
                                         }
@@ -289,7 +294,9 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
 
 
@@ -299,17 +306,17 @@
     tinymce.init({
         selector: '#mytextarea',
         height: 950,
-        plugins:'print preview fullscreen image link media template codesample table charmap hr help',
+        plugins: 'print preview fullscreen image link media template codesample table charmap hr help',
         toolbar1: 'formatselect | bold italic strikethrough forecolor backcolor | link | alignleft aligncenter alignright alignjustify  | numlist bullist outdent indent  | removeformat |fullscreen',
         language: 'fa_IR',
-        directionality : 'rtl'
-   });
+        directionality: 'rtl'
+    });
 
-   //clockpicker
-   $('.clockpicker').clockpicker({
+    //clockpicker
+    $('.clockpicker').clockpicker({
         placement: 'bottom',
         donetext: 'انتخاب'
-  });
+    });
 
     //treeView
     $('.demo1').bonsai();
@@ -317,8 +324,8 @@
 
     //DatePicker
     $("#PublishDate").MdPersianDateTimePicker({
-         targetTextSelector:"#InputPublishDate",
-         placement:'top',
+        targetTextSelector: "#InputPublishDate",
+        placement: 'top',
     });
 
     //Crop
@@ -374,42 +381,42 @@
         });
     });
 
-    $('#futurePublish').change(function(){
-    if(this.checked) {
-        $(".futurePublishDiv").show();
-    } else {
-        $(".futurePublishDiv").hide();
-    }
-});
+    $('#futurePublish').change(function () {
+        if (this.checked) {
+            $(".futurePublishDiv").show();
+        } else {
+            $(".futurePublishDiv").hide();
+        }
+    });
 
 
     // Select Tag
-     var substringMatcher = function(strs) {
-            return function findMatches(q, cb) {
-                var matches, substringRegex;
-                matches = [];
-                substrRegex = new RegExp(q, 'i');
-                $.each(strs, function(i, str) {
+    var substringMatcher = function (strs) {
+        return function findMatches(q, cb) {
+            var matches, substringRegex;
+            matches = [];
+            substrRegex = new RegExp(q, 'i');
+            $.each(strs, function (i, str) {
                 if (substrRegex.test(str)) {
                     matches.push(str);
                 }
-                });
-
-                cb(matches);
-            };
-            };
-
-            var states = @Html.Raw(Json.Serialize(ViewBag.Tags));
-            $('#tagstype').tagsinput({
-                    typeaheadjs:({
-                    hint: true,
-                    highlight: true,
-                    minLength: 1
-                },{
-                    name: 'states',
-                    source: substringMatcher(states)
-                })
             });
+
+            cb(matches);
+        };
+    };
+
+    var states = @Html.Raw(Json.Serialize(ViewBag.Tags));
+    $('#tagstype').tagsinput({
+        typeaheadjs: ({
+            hint: true,
+            highlight: true,
+            minLength: 1
+        }, {
+            name: 'states',
+            source: substringMatcher(states)
+        })
+    });
 
 </script>
 

@@ -12,6 +12,8 @@ namespace NewsWebsite.Entities
         public string Title { get; set; }
         public string Url { get; set; }
         public string Poster { get; set; }
+        public bool IsConfirm { get; set; }
+
         public DateTime? PublishDateTime { get; set; }
     }
 }

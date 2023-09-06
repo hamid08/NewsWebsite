@@ -75,7 +75,7 @@
                                                 }
                                             </div>
                                             <div class="col-md-12 col-sm-12 col-xs-12 user-detail-section1 text-center">
-                                                <a href="#" class="btn btn-success btn-sm btn-block mt-2"> ویرایش اطلاعات </a>
+                                                @*<a href="#" class="btn btn-success btn-sm btn-block mt-2"> ویرایش اطلاعات </a>*@
                                                 <a asp-action="ResetPassword" asp-controller="UserManager" asp-route-userId="@Model.Id" class="btn btn-warning btn-sm btn-block mb-2">بازنشانی کلمه عبور</a>
                                             </div>
                                         </div>
@@ -152,7 +152,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr>
+                                          @*  <tr>
                                                 <td>
                                                     ایمیل
                                                 </td>
@@ -162,7 +162,7 @@
                                                 <td>
                                                     <a href="#" class="btn btn-info btn-block btn-sm">ویرایش اطلاعات</a>
                                                 </td>
-                                            </tr>
+                                            </tr>*@
                                             <tr>
                                                 <td>
                                                     وضعیت حساب کاربری
@@ -173,8 +173,8 @@
                                                     </span>
                                                 </td>
                                                 <td>
-                                                    <a id="btnInActiveOrActiveUser" onclick="ConfigureSettings('@Model.Id','InActiveOrActiveUser')" class="btn btn-sm btn-block @(Model.IsActive==true?"btn-danger":"btn-success")">
-                                                        @(Model.IsActive == true ? "غیرفعال شود" : "فعال شود")
+                                                    <a id="btnInActiveOrActiveUser" onclick="ConfigureSettings('@Model.Id','InActiveOrActiveUser')" class="btn btn-sm btn-block text-white btn-warning">
+                                                        تغییر وضعیت
                                                     </a>
                                                 </td>
                                             </tr>
@@ -188,8 +188,8 @@
                                                     </span>
                                                 </td>
                                                 <td>
-                                                    <a id="btnChangeEmailConfirmed" onclick="ConfigureSettings('@Model.Id','ChangeEmailConfirmed')" class="btn btn-sm btn-block @(Model.EmailConfirmed==true?"btn-danger":"btn-success")">
-                                                        @(Model.EmailConfirmed == true ? "تایید نشود " : "تایید شود")
+                                                    <a id="btnChangeEmailConfirmed" onclick="ConfigureSettings('@Model.Id','ChangeEmailConfirmed')" class="btn btn-sm btn-block text-white btn-warning">
+                                                        تغییر وضعیت
                                                     </a>
                                                 </td>
                                             </tr>
@@ -203,11 +203,13 @@
                                                     </span>
                                                 </td>
                                                 <td>
-                                                    <a id="btnChangePhoneNumberConfirmed" onclick="ConfigureSettings('@Model.Id','ChangePhoneNumberConfirmed')" class="btn btn-sm btn-block @(Model.PhoneNumberConfirmed==true?"btn-danger":"btn-success")">
-                                                        @(Model.PhoneNumberConfirmed == true ? "تایید نشود" : "تایید شود")
+                                                    <a id="btnChangePhoneNumberConfirmed" onclick="ConfigureSettings('@Model.Id','ChangePhoneNumberConfirmed')" class="btn btn-sm btn-block text-white btn-warning">
+                                                        تغییر وضعیت
                                                     </a>
                                                 </td>
                                             </tr>
+
+                                    
                                             <tr>
                                                 <td>
                                                     قفل حساب کاربر
@@ -218,14 +220,14 @@
                                                     </span>
                                                 </td>
                                                 <td>
-                                                    <a id="btnChangeLockOutEnable" onclick="ConfigureSettings('@Model.Id','ChangeLockOutEnable')" class="btn btn-sm btn-block @(Model.LockoutEnabled==true?"btn-danger":"btn-success")">
-                                                        @(Model.LockoutEnabled == true ? "غیر فعال شود" : "فعال شود")
+                                                    <a id="btnChangeLockOutEnable" onclick="ConfigureSettings('@Model.Id','ChangeLockOutEnable')" class="btn btn-sm btn-block text-white btn-warning">
+                                                        تغییر وضعیت
                                                     </a>
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <td>
-                                                    اهرازهویت دو مرحله ای
+                                                    احرازهویت دو مرحله ای
                                                 </td>
                                                 <td>
                                                     <span id="ChangeTwoFactorEnabled" class="badge @(Model.TwoFactorEnabled==true?"badge-success":"badge-danger")">
@@ -233,8 +235,8 @@
                                                     </span>
                                                 </td>
                                                 <td>
-                                                    <a id="btnChangeTwoFactorEnabled" onclick="ConfigureSettings('@Model.Id','ChangeTwoFactorEnabled')" class="btn btn-sm btn-block @(Model.TwoFactorEnabled==true?"btn-danger":"btn-success")">
-                                                        @(Model.TwoFactorEnabled == true ? "غیرفعال شود" : "فعال شود")
+                                                    <a id="btnChangeTwoFactorEnabled" onclick="ConfigureSettings('@Model.Id','ChangeTwoFactorEnabled')" class="btn btn-sm btn-block text-white btn-warning">
+                                                        تغییر وضعیت
                                                     </a>
                                                 </td>
                                             </tr>
@@ -264,14 +266,14 @@
                                                 <td>
                                                     @if (Model.LockoutEnd.HasValue)
                                                     {
-                                                        <a id="btnLockOrUnLockUserAccount" onclick="ConfigureSettings('@Model.Id','LockOrUnLockUserAccount')" class="btn btn-sm btn-block @(LockoutEnd>DateTime.Now?"btn-success":"btn-danger")">
-                                                            @(LockoutEnd > DateTime.Now ? "خروج از قفل" : "قفل شود")
+                                                        <a id="btnLockOrUnLockUserAccount" onclick="ConfigureSettings('@Model.Id','LockOrUnLockUserAccount')" class="btn btn-sm btn-block text-white btn-warning">
+                                                            تغییر وضعیت
                                                         </a>
                                                     }
 
                                                     else
                                                     {
-                                                        <a id="btnLockOrUnLockUserAccount" onclick="ConfigureSettings('@Model.Id','LockOrUnLockUserAccount')" class="btn btn-sm btn-block btn-danger">
+                                                        <a id="btnLockOrUnLockUserAccount" onclick="ConfigureSettings('@Model.Id','LockOrUnLockUserAccount')" class="btn btn-sm btn-block text-white btn-warning">
                                                             قفل شود
                                                         </a>
                                                     }
@@ -310,3 +312,6 @@
         </div>
     </div>
 </div>
+
+
+

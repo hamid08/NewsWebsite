@@ -208,7 +208,7 @@ namespace NewsWebsite.Areas.Admin.Controllers
                 {
                     viewModel.PostageDateTime = DateTime.Now;
                  viewModel.CommentId = Guid.NewGuid().ToString();
-                    viewModel.IsConfirm = true;
+                    
                     await _uw.BaseRepository<Comment>().CreateAsync(_mapper.Map<Comment>(viewModel));
                     await _uw.Commit();
                     TempData["notification"] = "دیدگاه شما با موفقیت ارسال شد و بعد از تایید در سایت نمایش داده می شود.";

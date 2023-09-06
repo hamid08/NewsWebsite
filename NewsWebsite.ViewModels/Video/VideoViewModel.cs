@@ -20,6 +20,8 @@ namespace NewsWebsite.ViewModels.Video
         [Display(Name ="فایل ویدیو")]
         public IFormFile VideoFile { get; set; }
 
+        [JsonProperty("IsConfirm")]
+        public bool IsConfirm { get; set; }
 
         [JsonProperty("عنوان ویدیو"),Display(Name ="عنوان ویدیو")]
         [Required(ErrorMessage = "وارد نمودن {0} الزامی است.")]

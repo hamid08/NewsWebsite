@@ -19,10 +19,13 @@
                         {
                             <div class="tab-pane fade show @(i==1?"active":"")" id="@("post-"+i)" role="tabpanel" aria-labelledby="@("post-"+i+"-tab")">
                                 <!-- Single Feature Post -->
-                                <div class="single-feature-post video-post bg-img" style="background-image: url(/newsImage/@item.ImageName);">
+
+                                <div class="single-feature-post video-post bg-img"  style="background-image: url(/newsImage/@item.ImageName);">
                                     <!-- Post Content -->
+                            
+
                                     <div class="post-content">
-                                        <a href="#" class="post-cata">@item.NameOfCategories</a>
+                                        <a href="/News/@item.NewsId/@item.Url" class="post-cata">@item.NameOfCategories</a>
                                         <a href="/News/@item.NewsId/@item.Url" class="post-title"> @item.Title </a>
                                         <div class="post-meta d-flex float-left">
                                             <a href="#"><i class="fa fa-comments-o" aria-hidden="true"></i> @item.NumberOfComments </a>
@@ -31,8 +34,10 @@
                                             <a href="#"><i class="fa fa-thumbs-o-down" aria-hidden="true"></i> @item.NumberOfDisLike</a>
                                         </div>
                                     </div>
+
                                     <span class="news-duration">@DateTimeExtensions.ConvertMiladiToShamsi(item.PublishDateTime,"dd MMMM yyyy")</span>
                                 </div>
+
                             </div>
                             i++;
                         }

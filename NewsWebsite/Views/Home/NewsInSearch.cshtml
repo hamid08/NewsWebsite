@@ -50,8 +50,10 @@
                                 <div class="col-12 col-md-6">
                                     <!-- Post Thumbnail -->
                                     <div class="post-thumbnail">
-                                        <img src="~/newsImage/@item.ImageName" alt="@item.ImageName">
+                                <a href="/News/@item.NewsId/@item.Url">
 
+                                        <img src="~/newsImage/@item.ImageName" alt="@item.ImageName">
+                                        </a>
                                         <!-- Video Duration -->
                                         <span class="video-duration">@DateTimeExtensions.ConvertMiladiToShamsi(item.PublishDateTime,"HH:mm")</span>
                                     </div>

@@ -28,7 +28,7 @@ namespace NewsWebsite.Data.Repositories
             _mapper.CheckArgumentIsNull(nameof(_mapper));
         }
 
-        public int CountNewsPublished() => _context.News.Where(n => n.IsPublish == true && n.PublishDateTime <= DateTime.Now).Count();
+        public int CountNewsPublished() => _context.News.Where(n => n.IsConfirm && n.IsPublish == true && n.PublishDateTime <= DateTime.Now).Count();
         public async Task<List<NewsViewModel>> GetPaginateNews(int offset, int limit, Func<IGrouping<string, NewsViewModel>, Object> orderByAscFunc,
             Func<IGrouping<string, NewsViewModel>, Object> orderByDescFunc, string searchText,bool? isPublish,bool? isInternal)
         {
@@ -74,7 +74,8 @@ namespace NewsWebsite.Data.Repositories
                     PublishDateTime = n.PublishDateTime == null ? new DateTime(01, 01, 01) : n.PublishDateTime,
                     PersianPublishDate = n.PublishDateTime == null ? "-" : DateTimeExtensions.ConvertMiladiToShamsi(n.PublishDateTime, "yyyy/MM/dd ساعت HH:mm:ss"),
                     Status = n.IsPublish == false ? "پیش نویس" : n.PublishDateTime > DateTime.Now ? "انتشار در آینده" : "منتشر شده",
-
+                    AccessCategoryIds = n.NewsCategories.Select(c=> c.CategoryId).ToList(),
+                    IsConfirm = n.IsConfirm
                 })
                 .Skip(offset).Take(limit)
                 .ToListAsync();
@@ -101,6 +102,18 @@ namespace NewsWebsite.Data.Repositories
             }
 
             return fileName;
+        }
+
+
+        public async Task<List<string>> GetChildernCategory(string categoryId)
+        {
+            var result = new List<string>();
+
+           result = await _context.Categories.Where(c => c.CategoryId == categoryId || c.ParentCategoryId == categoryId)
+                .Select(c => c.CategoryId).ToListAsync();
+
+
+            return result;
         }
 
         public async Task<List<NewsViewModel>> MostViewedNews(int offset, int limit, string duration)
@@ -133,6 +146,8 @@ namespace NewsWebsite.Data.Repositories
               .Include(c => c.NewsCategories).ThenInclude(c => c.Category)
               .Include(c => c.NewsTags)
               //.Where(n => n.PublishDateTime <= EndMiladiDate && StartMiladiDate <= n.PublishDateTime)
+           
+              .Where(c=> c.IsConfirm)
               .Select(n => new NewsViewModel
               {
                   NewsId = n.NewsId,
@@ -179,6 +194,8 @@ namespace NewsWebsite.Data.Repositories
                .Include(c => c.NewsCategories).ThenInclude(c => c.Category)
                .Include(c => c.NewsTags)
                //.Where(n => n.PublishDateTime <= EndMiladiDate && StartMiladiDate <= n.PublishDateTime)
+            
+               .Where(c=> c.IsConfirm)
                .Select(n => new NewsViewModel
                {
                    NewsId = n.NewsId,
@@ -204,6 +221,8 @@ namespace NewsWebsite.Data.Repositories
              .Include(c => c.Comments)
              .Include(c => c.NewsCategories).ThenInclude(c => c.Category)
              .Include(c => c.NewsTags)
+             .Where(c=> c.IsConfirm)
+
              //.Where(n => n.IsPublish == true && n.PublishDateTime <= DateTime.Now)
              .Select(n => new NewsViewModel
              {
@@ -234,6 +253,8 @@ namespace NewsWebsite.Data.Repositories
                 .Include(c => c.NewsCategories).ThenInclude(c => c.Category)
                 .Include(c => c.NewsTags).ThenInclude(c=> c.Tag)
                 .Where(c=> c.NewsId == newsId)
+                .Where(c=> c.IsConfirm)
+
                 .Select(n => new NewsViewModel
                 {
                     NewsId = n.NewsId,
@@ -375,6 +396,7 @@ namespace NewsWebsite.Data.Repositories
                .Include(c => c.NewsCategories).ThenInclude(c => c.Category)
                .Include(c => c.NewsTags)
                .Where(c => c.NewsCategories.Any(c=> c.CategoryId == categoryId))
+               .Where(c=> c.IsConfirm)
                .Select(n => new NewsViewModel
                {
                    NewsId = n.NewsId,
@@ -421,7 +443,7 @@ namespace NewsWebsite.Data.Repositories
                 || c.Description.Contains(search)
                 : true)
 
-
+                .Where(c=> c.IsConfirm)
                .Select(n => new NewsViewModel
                {
                    NewsId = n.NewsId,

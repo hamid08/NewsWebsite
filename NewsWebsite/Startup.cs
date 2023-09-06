@@ -30,7 +30,7 @@ namespace NewsWebsite
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<SiteSettings>(Configuration.GetSection(nameof(SiteSettings)));
-            services.AddDbContext<NewsDBContext>(options => options.UseSqlServer(Configuration.GetConnectionString("SqlServer")));
+            services.AddDbContextPool<NewsDBContext>(options => options.UseSqlServer(Configuration.GetConnectionString("SqlServer")));
             services.AddCustomServices();
             services.AddCustomIdentityServices();
             services.AddAutoMapper();
@@ -47,6 +47,9 @@ namespace NewsWebsite
             });
 
             services.AddMvc();
+
+            services.AddRazorPages()
+    .AddRazorRuntimeCompilation();
 
         }
 

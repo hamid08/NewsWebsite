@@ -95,10 +95,10 @@ namespace NewsWebsite.Controllers
 
 
 
-            int? terminalFilter = null;
+            //int? terminalFilter = null;
 
-            var sale = _uw._Context.Sales.AsNoTracking();
-            var settlementDetails = _uw._Context.SettlementDetails;
+            //var sale = _uw._Context.Sales.AsNoTracking();
+            //var settlementDetails = _uw._Context.SettlementDetails;
 
 
 
@@ -394,12 +394,22 @@ namespace NewsWebsite.Controllers
             {
                 int countNewsPublished = _uw.NewsRepository.CountNewsPublished();
                 var news = await _uw.NewsRepository.GetPaginateNews(0, 10, item => "", item => item.First().PersianPublishDate, "", true, null);
+                news = news.Where(c => c.IsConfirm).ToList();
+                
                 var mostViewedNews = await _uw.NewsRepository.MostViewedNews(0, 3, "day");
                 var mostTalkNews = await _uw.NewsRepository.MostTalkNews(0, 5, "day");
                 var mostPopulerNews = await _uw.NewsRepository.MostPopularNews(0, 5);
                 var internalNews = await _uw.NewsRepository.GetPaginateNews(0, 10, item => "", item => item.First().PersianPublishDate, "", true, true);
-                var foreignNews = await _uw.NewsRepository.GetPaginateNews(0, 10, item => "", item => item.First().PersianPublishDate, "", true, false);
+                internalNews = internalNews.Where(c => c.IsConfirm).ToList();
+
+                 var foreignNews = await _uw.NewsRepository.GetPaginateNews(0, 10, item => "", item => item.First().PersianPublishDate, "", true, false);
+                foreignNews = foreignNews.Where(c => c.IsConfirm).ToList();
+
+
                 var videos = _uw.VideoRepository.GetPaginateVideos(0, 10, item => "", item => item.PersianPublishDateTime, "");
+                videos = videos.Where(c => c.IsConfirm).ToList();
+
+
                 var homePageViewModel = new HomePageViewModel(news, mostViewedNews, mostTalkNews, mostPopulerNews, internalNews, foreignNews, videos, countNewsPublished);
                 return View(homePageViewModel);
             }
@@ -410,6 +420,10 @@ namespace NewsWebsite.Controllers
         [Route("News/{newsId}/{url}")]
         public async Task<IActionResult> NewsDetails(string newsId, string url)
         {
+            var cNews = await _uw._Context.News.FirstOrDefaultAsync(c=> c.NewsId == newsId && c.IsConfirm);
+
+            if (cNews == null) return NotFound();
+
             string ipAddress = _accessor.HttpContext?.Connection?.RemoteIpAddress.ToString();
             Visit visit = _uw.BaseRepository<Visit>().FindByConditionAsync(n => n.NewsId == newsId && n.IpAddress == ipAddress).Result.FirstOrDefault();
             if (visit != null && visit.LastVisitDateTime.Date != DateTime.Now.Date)
@@ -439,6 +453,10 @@ namespace NewsWebsite.Controllers
         {
             int countNewsPublished = _uw.NewsRepository.CountNewsPublished();
             var news = await _uw.NewsRepository.GetPaginateNews(offset, limit, item => "", item => item.First().PersianPublishDate, "", true, null);
+            news = news.Where(c => c.IsConfirm).ToList();
+
+
+
             return PartialView("_NewsPaginate", new NewsPaginateViewModel(countNewsPublished, news));
         }
 
@@ -519,6 +537,7 @@ namespace NewsWebsite.Controllers
         public async Task<IActionResult> Videos()
         {
             var vidoes = await _uw.BaseRepository<Video>().FindAllAsync();
+            vidoes = vidoes.Where(c => c.IsConfirm).ToList();
 
             return View(vidoes);
         }
@@ -531,7 +550,7 @@ namespace NewsWebsite.Controllers
             else
             {
                 var video = await _uw.BaseRepository<Video>().FindByIdAsync(videoId);
-                if (video == null)
+                if (video == null || !video.IsConfirm)
                     return NotFound();
                 else
                     return View(video);

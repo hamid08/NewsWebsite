@@ -25,7 +25,7 @@ namespace NewsWebsite.ViewComponents
             for (int i=0;i<number;i++)
             {
                 randomRow = CustomMethods.RandomNumber(1, _uw.NewsRepository.CountNewsPublished()+1);
-                var news = await _uw._Context.News.Where(n => n.IsPublish == true && n.PublishDateTime <= DateTime.Now).Select(n => new NewsViewModel { Title = n.Title, Url = n.Url, NewsId = n.NewsId, ImageName = n.ImageName }).Skip(randomRow-1).Take(1).FirstOrDefaultAsync();
+                var news = await _uw._Context.News.Where(n => n.IsConfirm && n.IsPublish == true && n.PublishDateTime <= DateTime.Now).Select(n => new NewsViewModel { Title = n.Title, Url = n.Url, NewsId = n.NewsId, ImageName = n.ImageName }).Skip(randomRow-1).Take(1).FirstOrDefaultAsync();
                 newsList.Add(news);
             }
            

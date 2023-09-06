@@ -124,5 +124,61 @@
 
     @RenderSection("Scripts", false)
 
+    <script>
+
+        function ConfigureSettings(userId, element) {
+
+            var ajaxURL = '/Admin/UserManager/' + element;
+
+            
+
+            $.ajax({
+                type: "Get",
+                url: ajaxURL,
+                data: { userId: userId },
+                success: function (result) {
+                    if (result == 'تایید نشده' ||
+                        result == 'قفل نشده' ||
+                        result == 'غیرفعال' 
+                                                                       ) {
+                        HandelResult(false, element, result);
+                    }
+                    else {
+
+                        HandelResult(true, element, result);
+                    }
+                },
+                          beforeSend: function () { ShowLoading(); },
+                complete: function () { $("body").preloader('remove'); },
+                error: function () {
+                    ShowSweetErrorAlert();
+                }
+            });
+
+        }
+
+
+
+        function HandelResult(status, element, result) {
+            
+
+            var removeClassBage = 'badge-success';
+            var addClassBage = 'badge-danger';
+
+            if (status) {
+                removeClassBage = 'badge-danger';
+                addClassBage = 'badge-success';
+            }
+
+            $(`#${element}`).html(result);
+            $(`#${element}`).removeClass(removeClassBage);
+            $(`#${element}`).addClass(addClassBage);
+
+            $(`.${element}`).html(result);
+            $(`.${element}`).removeClass(removeClassBage);
+            $(`.${element}`).addClass(addClassBage);
+        }
+    </script>
+
 </body>
 </html>

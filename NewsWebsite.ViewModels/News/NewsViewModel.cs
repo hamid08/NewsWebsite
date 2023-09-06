@@ -67,6 +67,8 @@ namespace NewsWebsite.ViewModels.News
         [JsonProperty("تگ ها")]
         public string NameOfTags { get; set; }
 
+        [JsonProperty("IsConfirm")]
+        public bool IsConfirm { get; set; }
 
         [JsonProperty("نوع خبر")]
         public string NewsType { get; set; }
@@ -98,7 +100,9 @@ namespace NewsWebsite.ViewModels.News
         [JsonProperty("متن خبر")]
         public string Description { get; set; }
 
-        
+        public List<string> AccessCategoryIds { get; set; }
+
+        [Required(ErrorMessage = "وارد نمودن {0} الزامی است.")]
         [JsonIgnore]
         public string[] CategoryIds { get; set; }
 

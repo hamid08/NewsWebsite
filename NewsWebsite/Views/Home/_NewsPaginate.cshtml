@@ -9,8 +9,10 @@
             <div class="col-12 col-lg-6">
                 <!-- Post Thumbnail -->
                 <div class="post-thumbnail">
-                    <img src="~/newsImage/@item.ImageName" alt="@item.ImageName">
+                                <a href="/News/@item.NewsId/@item.Url">
 
+                    <img src="~/newsImage/@item.ImageName" alt="@item.ImageName">
+                    </a>
                     <!-- Video Duration -->
                     <span class="video-duration">@item.PublishDateTime.Value.ToString("HH:mm")</span>
                 </div>

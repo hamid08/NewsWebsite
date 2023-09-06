@@ -29,6 +29,7 @@ namespace NewsWebsite.Areas.Admin.Controllers
         private const string NewsNotFound = "خبر یافت نشد.";
         private readonly IMapper _mapper;
 
+
         public NewsController(IUnitOfWork uw, IMapper mapper, IHostingEnvironment env)
         {
             _uw = uw;
@@ -104,7 +105,23 @@ namespace NewsWebsite.Areas.Admin.Controllers
             else
                 news = await _uw.NewsRepository.GetPaginateNews(offset, limit, item => "", item => item.First().PersianPublishDate, search, null, null);
 
+            var accessCategoryIds = new List<string>();
+            var oldUserCategory = await _uw.BaseRepository<UserCategory>()
+           .FindByConditionAsync(c => c.UserId.ToString() == User.Identity.GetUserId());
 
+            var userCategoryIds = oldUserCategory.Select(c => c.CategoryId).ToList();
+
+            if (userCategoryIds != null && userCategoryIds.Any())
+            {
+                foreach (var item in userCategoryIds)
+                {
+                    accessCategoryIds.AddRange(await _uw.NewsRepository.GetChildernCategory(item));
+
+                }
+
+                news = news.Where(c => accessCategoryIds.Any(x => c.AccessCategoryIds.Contains(x))).ToList();
+
+            }
 
             if (search != "")
                 total = news.Count();
@@ -112,7 +129,9 @@ namespace NewsWebsite.Areas.Admin.Controllers
             return Json(new { total = total, rows = news });
         }
 
-        [HttpGet]
+       
+        [HttpGet, DisplayName("درج و ویرایش")]
+        [Authorize(Policy = ConstantPolicies.DynamicPermission)]
         public async Task<IActionResult> CreateOrUpdate(string newsId)
         {
             var oldUserCategory = await _uw.BaseRepository<UserCategory>()
@@ -172,6 +191,8 @@ namespace NewsWebsite.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateOrUpdate(NewsViewModel viewModel, string submitButton)
         {
+
+
             viewModel.Url = viewModel.Url.Trim();
             ViewBag.Tags = _uw._Context.Tags.Select(t => t.TagName).ToList();
             viewModel.NewsCategoriesViewModel = new NewsCategoriesViewModel(await _uw.CategoryRepository.GetAllCategoriesAsync(), viewModel.CategoryIds);
@@ -266,7 +287,10 @@ namespace NewsWebsite.Areas.Admin.Controllers
                     else
                         viewModel.NewsTags = null;
 
-                    await _uw.BaseRepository<News>().CreateAsync(_mapper.Map<News>(viewModel));
+                    var newNews = _mapper.Map<News>(viewModel);
+                    newNews.IsConfirm = false;
+
+                    await _uw.BaseRepository<News>().CreateAsync(newNews);
                     await _uw.Commit();
                     return RedirectToAction(nameof(Index));
                 }
@@ -276,7 +300,9 @@ namespace NewsWebsite.Areas.Admin.Controllers
         }
 
 
-        [HttpGet, AjaxOnly]
+        [AjaxOnly]
+        [HttpGet, DisplayName("حذف")]
+        [Authorize(Policy = ConstantPolicies.DynamicPermission)]
         public async Task<IActionResult> Delete(string newsId)
         {
             if (!newsId.HasValue())
@@ -296,29 +322,31 @@ namespace NewsWebsite.Areas.Admin.Controllers
         [HttpPost, ActionName("Delete"), AjaxOnly]
         public async Task<IActionResult> DeleteConfirmed(News model)
         {
-                if (model.NewsId == null)
+            if (model.NewsId == null)
+                ModelState.AddModelError(string.Empty, NewsNotFound);
+            else
+            {
+                var news = await _uw.BaseRepository<News>().FindByIdAsync(model.NewsId);
+                if (news == null)
                     ModelState.AddModelError(string.Empty, NewsNotFound);
                 else
                 {
-                    var news = await _uw.BaseRepository<News>().FindByIdAsync(model.NewsId);
-                    if (news == null)
-                        ModelState.AddModelError(string.Empty, NewsNotFound);
-                    else
-                    {
-                        _uw.BaseRepository<News>().Delete(news);
-                        await _uw.Commit();
-                        FileExtensions.DeleteFile($"{_env.WebRootPath}/newsImage/{news.ImageName}");
-                        TempData["notification"] = DeleteSuccess;
-                        return PartialView("_DeleteConfirmation", news);
-                    }
+                    _uw.BaseRepository<News>().Delete(news);
+                    await _uw.Commit();
+                    FileExtensions.DeleteFile($"{_env.WebRootPath}/newsImage/{news.ImageName}");
+                    TempData["notification"] = DeleteSuccess;
+                    return PartialView("_DeleteConfirmation", news);
                 }
-            
-          
+            }
+
+
             return PartialView("_DeleteConfirmation");
         }
 
 
         [HttpPost, ActionName("DeleteGroup"), AjaxOnly]
+        [DisplayName("حذف گروهی")]
+        [Authorize(Policy = ConstantPolicies.DynamicPermission)]
         public async Task<IActionResult> DeleteGroupConfirmed(string[] btSelectItem)
         {
             if (btSelectItem.Count() == 0)
@@ -337,5 +365,52 @@ namespace NewsWebsite.Areas.Admin.Controllers
 
             return PartialView("_DeleteGroup");
         }
+
+        
+        [HttpGet, DisplayName("تایید خبر")]
+        [Authorize(Policy = ConstantPolicies.DynamicPermission)]
+        public async Task<IActionResult> ConfirmOrInconfirm(string newsId)
+        {
+            if (!newsId.HasValue())
+                ModelState.AddModelError(string.Empty, NewsNotFound);
+            else
+            {
+                var news = await _uw.BaseRepository<News>().FindByIdAsync(newsId);
+                if (news == null)
+                    ModelState.AddModelError(string.Empty, NewsNotFound);
+                else
+                    return PartialView("_ConfirmOrInconfirm", news);
+            }
+            return PartialView("_ConfirmOrInconfirm");
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> ConfirmOrInconfirm(News model)
+        {
+            if (model.NewsId == null)
+                ModelState.AddModelError(string.Empty, NewsNotFound);
+            else
+            {
+                var news = await _uw.BaseRepository<News>().FindByIdAsync(model.NewsId);
+                if (news == null)
+                    ModelState.AddModelError(string.Empty, NewsNotFound);
+                else
+                {
+                    if (news.IsConfirm)
+                        news.IsConfirm = false;
+                    else
+                        news.IsConfirm = true;
+
+                    _uw.BaseRepository<News>().Update(news);
+                    await _uw.Commit();
+                    TempData["notification"] = OperationSuccess;
+                    return PartialView("_ConfirmOrInconfirm", news);
+                }
+            }
+            return PartialView("_ConfirmOrInconfirm");
+        }
+
+
     }
 }
