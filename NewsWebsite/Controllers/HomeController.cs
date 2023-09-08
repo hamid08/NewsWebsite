@@ -557,5 +557,23 @@ namespace NewsWebsite.Controllers
             }
         }
 
+        //public async Task<IActionResult> LikeOrDisLike(bool status,string newsId)
+        //{
+        //    var result = true;
+
+        //    var news = await _uw._Context.News.FindAsync(newsId);
+        //    if (news is null) return Json(null);
+
+        //    var 
+
+        //    if (!status)
+        //    {
+
+
+        //    }
+
+        //    return Json("");
+        //}
+
     }
 }

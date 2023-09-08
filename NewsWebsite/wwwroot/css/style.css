@@ -16,7 +16,7 @@
 }
 
 body {
-    font-family: "Vazir",tahoma,sans-serif;
+    font-family: "bugfixer",tahoma,sans-serif;
     font-size: 14px;
     direction: rtl;
     text-align: right;
@@ -29,15 +29,15 @@ h3,
 h4,
 h5,
 h6 {
-    font-family: "Vazir_Bold",tahoma, sans-serif;
+    font-family: "bugfixer",tahoma, sans-serif;
     line-height: 1.3;
     font-weight: 500;
 }
 
 p {
     color: #5d5858;
-    ;
-    font-size: 14px;
+    
+    font-size: 17px;
     line-height: 2;
     font-weight: 400;
 }
@@ -53,7 +53,7 @@ a:focus {
     color: #878484;
     font-weight: 500;
     font-size: 14px;
-    font-family: "Vazir_Medium", sans-serif;
+    font-family: "bugfixer", sans-serif;
 }
 
 .classynav ul li a:hover {
@@ -65,7 +65,7 @@ a:focus {
 }
 
 .post-meta a, .post-meta span {
-    font-family: Vazir_FD;
+    font-family: bugfixer;
 }
 
 ul {
@@ -743,7 +743,7 @@ input:focus {
 }
 
 .header-area .vizew-main-menu .classy-navbar .classynav ul li a {
-    font-family: "Vazir_Medium";
+    font-family: "bugfixer";
     text-transform: uppercase;
     font-size: 14px;
     color: #ffffff;
@@ -1387,7 +1387,7 @@ line-height: 1.5;
 
     .post-cata.cata-sm {
         font-size: 10px;
-        font-family: Vazir_Medium;
+        font-family: bugfixer;
     }
 
         .post-cata.cata-sm:hover, .post-cata.cata-sm:focus {
@@ -1440,7 +1440,7 @@ line-height: 1.5;
         display: block;
         margin-bottom: 15px;
         font-size: 17px;
-        font-family: Vazir_Medium;
+        font-family: bugfixer;
     }
 
 @media only screen and (min-width: 992px) and (max-width: 1199px) {
@@ -1468,7 +1468,7 @@ line-height: 1.5;
 .single-post-area .post-content .post-meta a {
     display: inline-block;
     margin-left: 20px;
-    font-family: Vazir_FD;
+    font-family: bugfixer;
     font-size: 13px !important;
 }
 
@@ -1488,7 +1488,7 @@ line-height: 1.5;
 .single-post-area .post-content .post-meta .post-date {
     color: #595959;
     font-size: 13px !important;
-    font-family: "Vazir_FD";
+    font-family: "bugfixer";
     margin-right: 3px !important;
 }
 
@@ -1620,7 +1620,7 @@ line-height: 1.5;
     padding: 0 15px;
     margin-right: 5px;
     border: none;
-    font-family: Vazir_FD;
+    font-family: bugfixer;
 }
 
     .pagination .page-item .page-link:hover, .pagination .page-item .page-link:focus {
@@ -1665,6 +1665,15 @@ line-height: 1.5;
         font-size: 16px;
     }
 }
+
+.ck-label {
+    display: none !important;
+}
+
+.ck-editor__editable {
+    min-height: 300px !important;
+}
+
 
 .unordered-list {
     position: relative;

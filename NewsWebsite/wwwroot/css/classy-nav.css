@@ -88,13 +88,13 @@ img {
   -ms-flex-align: center;
   -ms-grid-row-align: center;
   align-items: center; }
-  .classy-navbar .nav-brand {
-    font-size: 24px;
-    color: #fff;
-    display: inline-block;
-    margin-left: 30px;
-    font-family: "Vazir_Medium";
-   }
+    .classy-navbar .nav-brand {
+        font-size: 24px;
+        color: #fff;
+        display: inline-block;
+        margin-left: 30px;
+        font-family: "bugfixer";
+    }
     .classy-navbar .nav-brand:focus, .classy-navbar .nav-brand:hover {
       font-size: 24px;
       color:#fff !important;
