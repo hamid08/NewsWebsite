@@ -1,0 +1,29 @@
+﻿@model NewsWebsite.ViewModels.ContactUs.MessageViewModel
+
+<div  class="contact-form-area">
+    <form id="SendMessageForm" asp-action="SendMessage" asp-controller="Home" method="post">
+       
+
+        <input name="IsValid" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
+        @if (ViewData.ModelState.IsValid.ToString() == "False")
+        {
+            <div asp-validation-summary="All" class="alert col-md-12 alert-danger mt-2"></div>
+        }
+        <div class="row">
+            <div class="col-12 col-lg-6">
+                <input type="text" asp-for="Name" class="form-control" placeholder="نام*">
+            </div>
+            <div class="col-12 col-lg-6">
+                <input type="email" asp-for="Email" class="form-control" placeholder="ایمیل*">
+            </div>
+            <div class="col-12">
+                <textarea asp-for="Desription" class="form-control" placeholder="پیام خود را بنویسید ...*"></textarea>
+            </div>
+
+            <div class="col-12">
+                <button class="btn vizew-btn mt-10 btn-sm float-left" type="button" onclick="SendMessage()">ارسال پیام</button>
+            </div>
+
+        </div>
+    </form>
+</div>

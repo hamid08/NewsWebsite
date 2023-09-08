@@ -1,0 +1,49 @@
+﻿@model HomePageViewModel
+@using NewsWebsite.Common
+@using NewsWebsite.ViewModels.ContactUs;
+@using NewsWebsite.ViewModels.Home;
+@using NewsWebsite.ViewModels.Newsletter
+@{
+    ViewData["Title"] = "ارتباط با ما";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="vizew-breadcrumb">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/"><i class="fa fa-home" aria-hidden="true"></i> خانه</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">ارتباط با ما</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ##### Breadcrumb Area End ##### -->
+<!-- ##### Archive List Posts Area Start ##### -->
+<div class="vizew-archive-list-posts-area mb-80">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-12 col-lg-8">
+                <!-- Archive Catagory & View Options -->
+                <div class="archive-catagory-view mb-30 d-flex align-items-center justify-content-between">
+                    <!-- Catagory -->
+                    <div class="archive-catagory">
+                        <h4> ارتباط با ما </h4>
+                    </div>
+                    <!-- View Options -->
+                   
+                </div>
+                @await Html.PartialAsync("_SendMessage", new MessageViewModel())
+
+
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- ##### Archive List Posts Area End ##### -->

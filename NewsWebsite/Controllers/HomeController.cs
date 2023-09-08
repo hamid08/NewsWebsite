@@ -11,6 +11,8 @@ using Microsoft.EntityFrameworkCore;
 using NewsWebsite.Common;
 using NewsWebsite.Data.Contracts;
 using NewsWebsite.Entities;
+using NewsWebsite.ViewModels.Comments;
+using NewsWebsite.ViewModels.ContactUs;
 using NewsWebsite.ViewModels.Home;
 using NewsWebsite.ViewModels.News;
 using NewsWebsite.ViewModels.Video;
@@ -379,7 +381,22 @@ namespace NewsWebsite.Controllers
             //var TotalValue = saleData_Db.Sum(c => c.TotalValue);
             //var SaleCount = saleData_Db.Sum(c => c.SaleCount);
 
+            var ipAddress = Request.HttpContext.Connection.RemoteIpAddress.ToString();
 
+            var siteVisitDb = await _uw._Context.SiteVisits.FirstOrDefaultAsync(c =>
+            c.IpAddress == ipAddress && c.VisitDateTime.Date == DateTime.UtcNow.Date);
+
+            if (siteVisitDb == null)
+            {
+                var siteVisit = new SiteVisit()
+                {
+                    IpAddress = Request.HttpContext.Connection.RemoteIpAddress.ToString(),
+                    VisitDateTime = DateTime.UtcNow,
+
+                };
+                await _uw._Context.SiteVisits.AddAsync(siteVisit);
+                await _uw.Commit();
+            }
 
 
             var isAjax = Request.Headers["X-Requested-With"] == "XMLHttpRequest";
@@ -557,23 +574,44 @@ namespace NewsWebsite.Controllers
             }
         }
 
-        //public async Task<IActionResult> LikeOrDisLike(bool status,string newsId)
-        //{
-        //    var result = true;
 
-        //    var news = await _uw._Context.News.FindAsync(newsId);
-        //    if (news is null) return Json(null);
+        public async Task<IActionResult> ContactUs()
+        {
+            return View();
 
-        //    var 
-
-        //    if (!status)
-        //    {
+        }
 
 
-        //    }
 
-        //    return Json("");
-        //}
+        public async Task<IActionResult> SendMessage(MessageViewModel viewModel)
+        {
+            try
+            {
+
+                if (ModelState.IsValid)
+                {
+                    viewModel.PostageDateTime = DateTime.Now;
+
+                    var contactUs = new ContactUs()
+                    {
+                        Desription = viewModel.Desription,
+                        Email = viewModel.Email,
+                        Name = viewModel.Name,
+                        PostageDateTime = viewModel.PostageDateTime.Value
+                    };
+
+                    await _uw.BaseRepository<ContactUs>().CreateAsync(contactUs);
+                    await _uw.Commit();
+                    TempData["notification"] = "پیام شما با موفقیت ارسال شد.";
+                }
+                return PartialView("_SendMessage", viewModel);
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+        }
 
     }
 }

@@ -5,23 +5,17 @@ using System.Text;
 using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
 
-namespace NewsWebsite.ViewModels.Comments
+namespace NewsWebsite.ViewModels.ContactUs
 {
-    public class CommentViewModel
+    public class MessageViewModel
     {
-        public CommentViewModel()
+        public MessageViewModel()
         {
 
-        }
-
-        public CommentViewModel(string parentCommentId, string newsId)
-        {
-            ParentCommentId = parentCommentId;
-            NewsId = newsId;
         }
 
         [JsonProperty("Id")]
-        public string CommentId { get; set; }
+        public string Id { get; set; }
 
         [JsonProperty("ردیف")]
         public int Row { get; set; }
@@ -33,7 +27,7 @@ namespace NewsWebsite.ViewModels.Comments
 
         [JsonProperty("ایمیل"),Display(Name = "ایمیل")]
         [Required(ErrorMessage = "وارد نمودن {0} الزامی است.")]
-        [EmailAddress(ErrorMessage = "ایمیل وارد شده معتبر نمی باشد.")]
+        [EmailAddress(ErrorMessage ="ایمیل وارد شده معتبر نمی باشد.")]
         public string Email { get; set; }
 
         [Required(ErrorMessage = "وارد نمودن {0} الزامی است.")]
@@ -41,21 +35,10 @@ namespace NewsWebsite.ViewModels.Comments
         public string Desription { get; set; }
 
         [JsonIgnore]
-        public string NewsId { get; set; }
-
-        [JsonProperty("IsConfirm")]
-        public bool IsConfirm { get; set; }
-
-        [JsonIgnore]
         public DateTime? PostageDateTime { get; set; }
 
         [JsonProperty("تاریخ ارسال")]
         public string PersianPostageDateTime { get; set; }
 
-        [JsonIgnore]
-        public string ParentCommentId { get; set; }
-
-        [JsonIgnore]
-        public virtual List<CommentViewModel> comments { get; set; }
     }
 }

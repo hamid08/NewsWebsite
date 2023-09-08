@@ -274,6 +274,43 @@ function SendComment(parentCommentId){
 }
 
  
+function SendMessage() {
+
+    var form = $('#SendMessageForm');
+    var actionUrl = form.attr('action');
+    var dataToSend = new FormData(form.get(0));
+  
+    
+        var loaderAfter = "#reply-"
+    
+    $.ajax({
+        url: actionUrl, type: "post", data: dataToSend, processData: false, contentType: false, error: function () {
+            ShowSweetErrorAlert();
+        },
+        beforeSend: function () {
+            //$(".vizew-btn").attr("disabled", true);
+            //$(loaderAfter).after("<p class='text-center mb-5 mt-3'><span style='font-size:18px;font-family: Vazir_Medium;'> در حال ارسال دیدگاه  </span><img src='/icons/LoaderIcon.gif'/></p>")
+        },
+        complete: function () {
+            //$(".vizew-btn").attr("disabled", false);
+            //$(loaderAfter).next().replaceWith("");
+        }
+    }).done(function (data) {
+        var newForm = $("form", data);
+        $("#SendMessageForm").replaceWith(newForm);
+        var IsValid = newForm.find("input[name='IsValid']").val() === "True";
+        if (IsValid) {
+          
+            $.ajax({ url: '/Admin/Base/Notification', error: function () { ShowSweetErrorAlert(); } }).done(function (notification) {
+                ShowSweetSuccessAlert(notification)
+            });
+            $("#Name").val("");
+            $("#Email").val("");
+            $("#Desription").val("");
+        }
+    });
+}
+
 
 
 
