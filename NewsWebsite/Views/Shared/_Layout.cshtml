@@ -55,14 +55,16 @@
                     </div>
                     <div class="col-12 col-md-6">
                         <div class="top-meta-data d-flex align-items-center justify-content-end">
+                            @await  Component.InvokeAsync("SiteInfoComponent")
+
                             <!-- Top Social Info -->
-                            <div class="top-social-info">
+                          @*  <div class="top-social-info">
                               <a href="#"></a>
-                                @*<a href="#"><i class="fa fa-instagram"></i></a>
+                                <a href="#"><i class="fa fa-instagram"></i></a>
                                 <a href="#"><i class="fa fa-google-plus"></i></a>
                                 <a href="#"><i class="fa fa-linkedin"></i></a>
-                                <a href="#"><i class="fa fa-telegram"></i></a>*@
-                            </div>
+                                <a href="#"><i class="fa fa-telegram"></i></a>
+                            </div>*@
                             <!-- Top Search Area -->
                             <div class="top-search-area">
                                 <form asp-controller="Home" asp-action="NewsInSearch">
@@ -149,13 +151,18 @@
                             <p>آدرس ایمیل : ...</p>
                         </div>
                         <!-- Footer Social Area -->
-                        <div class="footer-social-area">
-                            <a href="/Home/ContactUs" class="google-plus"><i class="fa fa-comment">ارتباط با ما</i></a>
-                            @*<a href="#" class="google-plus"><i class="fa fa-google-plus"></i></a>
+
+                        <div class="" style="font-size: 43px;">
+                            <a href="/Home/ContactUs" style="font-size: 18px;" class="btn  btn-warning btn-sm">ارتباط با ما</a>
+                        </div>
+
+                       @* <div class="footer-social-area">
+                           <a href="/Home/ContactUs" class="google-plus">ارتباط با ما</a>
+                            <a href="#" class="google-plus"><i class="fa fa-google-plus"></i></a>
                             <a href="#" class="instagram"><i class="fa fa-instagram"></i></a>
                             <a href="#" class="twitter"><i class="fa fa-telegram"></i></a>
-                            <a href="#" class="linkedin"><i class="fa fa-linkedin"></i></a>*@
-                        </div>
+                            <a href="#" class="linkedin"><i class="fa fa-linkedin"></i></a>
+                        </div>*@
                     </div>
                 </div>
             </div>

@@ -19,6 +19,7 @@ namespace NewsWebsite.Data.UnitOfWork
         private INewsRepository _newsRepository;
         private INewsletterRepository _newsletterRepository;
         private ICommentRepository _commentRepository;
+        private IContactUsRepository _contactUsRepository;
 
         public UnitOfWork(NewsDBContext context, IMapper mapper)
         {
@@ -107,6 +108,17 @@ namespace NewsWebsite.Data.UnitOfWork
                     _commentRepository = new CommentRepository(_Context);
 
                 return _commentRepository;
+            }
+        }
+        
+        public IContactUsRepository ContactUsRepository
+        {
+            get
+            {
+                if (_contactUsRepository == null)
+                    _contactUsRepository = new ContactUsRepository(_Context);
+
+                return _contactUsRepository;
             }
         }
 

@@ -10,6 +10,7 @@ namespace NewsWebsite.Entities
     public class SiteVisit
     {
         [Key]
+        public int Id { get; set; }
         public string IpAddress { get; set; }
         public DateTime VisitDateTime { get; set; }
 

@@ -191,11 +191,17 @@ namespace NewsWebsite.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateOrUpdate(NewsViewModel viewModel, string submitButton)
         {
+            var oldUserCategory = await _uw.BaseRepository<UserCategory>()
+           .FindByConditionAsync(c => c.UserId.ToString() == User.Identity.GetUserId());
+
+            var userCategoryIds = oldUserCategory.Select(c => c.CategoryId).ToList();
+
+            var reallyCategories = await _uw.CategoryRepository.GetAllUserCategoriesAsync(userCategoryIds);
 
 
             viewModel.Url = viewModel.Url.Trim();
             ViewBag.Tags = _uw._Context.Tags.Select(t => t.TagName).ToList();
-            viewModel.NewsCategoriesViewModel = new NewsCategoriesViewModel(await _uw.CategoryRepository.GetAllCategoriesAsync(), viewModel.CategoryIds);
+            viewModel.NewsCategoriesViewModel = new NewsCategoriesViewModel(reallyCategories, viewModel.CategoryIds);
             if (!viewModel.FuturePublish)
             {
                 ModelState.Remove("PersianPublishTime");

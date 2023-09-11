@@ -15,6 +15,7 @@ namespace NewsWebsite.Data.Contracts
         INewsRepository NewsRepository { get; }
         INewsletterRepository NewsletterRepository { get; }
         ICommentRepository CommentRepository { get; }
+        IContactUsRepository ContactUsRepository { get; }
         NewsDBContext _Context { get; }
         Task Commit();
     }

@@ -465,7 +465,7 @@ input:focus {
 }
 
 .top-header-area .breaking-news-area .news-title {
-    min-width: 120px;
+    min-width: 160px !important;
 }
 
     .top-header-area .breaking-news-area .news-title p {
