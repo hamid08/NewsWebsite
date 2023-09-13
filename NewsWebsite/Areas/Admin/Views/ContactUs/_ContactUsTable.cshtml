@@ -1,6 +1,8 @@
 ﻿
     <div id="toolbar">
-       
+    <button type="button" class="btn btn-danger" data-toggle="ajax-modal" data-url="@Url.Action("DeleteGroup","Tag")">
+        <i class="fa fa-trash"></i> | حذف گروهی
+    </button>
     </div>
 <table id="table"
        data-toolbar="#toolbar"
@@ -48,6 +50,16 @@
             return res
     }
 
+
+    function operateFormatter(value, row, index) {
+        return [
+            '<button type="button" class="btn-link text-danger" data-toggle="ajax-modal" data-url=@Url.Action("Delete", "ContactUs")/?id=' + row.id + ' title="حذف">',
+            '<i class="fa fa-trash"></i>',
+            '</button >'
+        ].join('')
+    }
+
+
     function detailFormatter(index, row) {
             var html = []
             $.each(row, function (key, value) {
@@ -58,6 +70,9 @@
         }
 
 
+    function checkBoxFormat(value, row) {
+        return '<input type="checkbox" name="btSelectItem" value="' + row.id + '" />';
+    }
 
 
         function totalTextFormatter(data) {
@@ -74,7 +89,15 @@
                 height: 600,
                 locale: 'fa-IR',
                 columns: [
-                    [{
+                    [
+                    {
+                        field: 'state',
+                        checkbox: true,
+                        rowspan: 2,
+                        align: 'center',
+                        valign: 'middle',
+                        formatter: checkBoxFormat
+                    }, {
                         title: 'ردیف',
                     field: 'row',
                         rowspan: 2,
@@ -83,7 +106,7 @@
                         footerFormatter: totalTextFormatter
                     }, {
                         title: 'جزئیات اطلاعات پیام های ارسالی',
-                        colspan: 3,
+                        colspan: 6,
                         align: 'center'
                     }],
                     [{
@@ -95,10 +118,21 @@
                         title: 'ایمیل',
                         sortable: true,
                     },{
+                    field: 'desription',
+                        title: 'پیام',
+                        sortable: true,
+                    },{
                     field: 'persianPostageDateTime',
                         title: 'تاریخ ارسال',
                         align: 'center',
                         sortable: true,
+                    }
+                    ,{
+                        field: 'operate',
+                        title: 'عملیات',
+                        align: 'center',
+                        events: window.operateEvents,
+                        formatter: operateFormatter
                     }]
                 ]
             })

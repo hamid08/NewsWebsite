@@ -87,5 +87,67 @@ namespace NewsWebsite.Areas.Admin.Controllers
             return Json(new { total = total, rows = comments });
         }
 
+
+        [HttpGet]
+        public async Task<IActionResult> Delete(string id)
+        {
+            if (!id.HasValue())
+                ModelState.AddModelError(string.Empty, CommentNotFound);
+            else
+            {
+                var contactUs = await _uw.BaseRepository<ContactUs>().FindByIdAsync(id);
+                if (contactUs == null)
+                    ModelState.AddModelError(string.Empty, CommentNotFound);
+                else
+                    return PartialView("_DeleteConfirmation", contactUs);
+            }
+            return PartialView("_DeleteConfirmation");
+        }
+
+
+        [HttpPost, ActionName("Delete")]
+        public async Task<IActionResult> DeleteConfirmed(ContactUs model)
+        {
+            if (model.Id == null)
+                ModelState.AddModelError(string.Empty, CommentNotFound);
+            else
+            {
+                var contactUs = await _uw.BaseRepository<ContactUs>().FindByIdAsync(model.Id);
+                if (contactUs == null)
+                    ModelState.AddModelError(string.Empty, CommentNotFound);
+                else
+                {
+                    _uw.BaseRepository<ContactUs>().Delete(contactUs);
+                    await _uw.Commit();
+                    TempData["notification"] = DeleteSuccess;
+                    return PartialView("_DeleteConfirmation", contactUs);
+                }
+            }
+            return PartialView("_DeleteConfirmation");
+        }
+
+
+        [HttpPost, ActionName("DeleteGroup")]
+        public async Task<IActionResult> DeleteGroupConfirmed(string[] btSelectItem)
+        {
+            if (btSelectItem.Count() == 0)
+                ModelState.AddModelError(string.Empty, "هیچ پیامی برای حذف انتخاب نشده است.");
+            else
+            {
+                foreach (var item in btSelectItem)
+                {
+                    var contactUs = await _uw.BaseRepository<ContactUs>().FindByIdAsync(item);
+                    _uw.BaseRepository<ContactUs>().Delete(contactUs);
+                }
+
+                await _uw.Commit();
+                TempData["notification"] = "حذف گروهی اطلاعات با موفقیت انجام شد.";
+            }
+
+            return PartialView("_DeleteGroup");
+        }
+
+
+
     }
 }
