@@ -47,6 +47,8 @@ namespace NewsWebsite.Controllers
         [HttpPost]
         public async Task<IActionResult> SignIn(SignInViewModel viewModel)
         {
+            //https://s31.picofile.com/file/8467964834/publish.zip.html
+
             ModelState.Remove(nameof(SignInViewModel.GoogleRecaptchaResponse));
 
             if (ModelState.IsValid)
